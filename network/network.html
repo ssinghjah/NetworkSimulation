@@ -1,0 +1,149 @@
+<html>
+    <head>
+        <title>Network Simulation</title>
+        <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+        <link rel="stylesheet" type="text/css" href="css/bar.css">
+        <link rel="stylesheet" type="text/css" href="css/linePlot.css">
+        <link rel="stylesheet" type="text/css" href="css/generic.css">
+        <link href="css/simple-sidebar.css" type="text/css" rel="stylesheet">
+        <script type="text/javascript" src="js/random.js"></script>
+        <script type="text/javascript" src="js/d3.min.js"></script>
+        <script type="text/javascript" src="js/jquery.min.js"></script>
+        <script type="text/javascript" src="js/bootstrap.min.js"></script>
+        <script type="text/javascript" src="js/random-0.26.js"></script>
+        <script type="text/javascript" src="js/sim-0.26.js"></script>
+        <script type="text/javascript" src="js/packet.js"></script>
+        <script type="text/javascript" src="js/seedGenerator.js"></script>
+        <script type="text/javascript" src="js/packetGenerator.js"></script>
+        <script type="text/javascript" src="js/histogram.js"></script>
+        <script type="text/javascript" src="js/summary.js"></script>
+        <script type="text/javascript" src="js/eventLog.js"></script>
+        <script type="text/javascript" src="js/eventHandlers.js"></script>
+        <script type="text/javascript" src="js/resultsDisplayer.js"></script>
+        <script type="text/javascript" src="js/settings.js"></script>
+        <script type="text/javascript" src="js/bus.js"></script>
+        <script type="text/javascript" src="js/simulation.js"></script>
+        <script type="text/javascript" src="js/linePlot.js"></script>
+        <script type="text/javascript" src="js/node.js"></script>
+        </head>
+        <body>
+
+<body>
+
+    <div id="wrapper">
+        <!-- Sidebar -->
+        <div id="sidebar-wrapper">
+            <ul class="sidebar-nav">
+                <li class="sidebar-brand">
+                    <a href="#" class="active" onclick="Simulate();">
+                        Simulate
+                    </a>
+                </li>
+                <li>
+                    <a href="#" id="editLink" class="links" onclick="onEdit();">Edit Parameters</a>
+                </li>
+                <li>
+                    <a href="#" id="summaryLink" class="links results" onclick="onSummary();">Summary</a>
+                </li>
+                <li>
+                    <a href="#" id="interPacketLink" class="links results" onclick="onInterPacket();">Inter Packet Arrival Time</a>
+                </li>
+                <li>
+                    <a href="#" id="queueDelayLink" class="links results" onclick="onQueueDelay();">Queue Delay</a>
+                </li>
+                <li>
+                    <a href="#" id="e2eDelayLink" class="links results" onclick="onE2EDelay();">End to End Delay</a>
+                </li>
+                <li>
+                    <a href="#" id="eventLogLink" class="links results" onclick="onEventLog();">Event Log</a>
+                </li>
+                <li>
+                    <a href="#" id="aboutLink" class="links" onclick="onAbout();">About</a>
+                </li>
+            </ul>
+        </div>
+        <!-- /#sidebar-wrapper -->
+
+        <!-- Page Content -->
+        <div id="page-content-wrapper">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <a href="#menu-toggle" class="btn btn-default" id="menu-toggle">Toggle Menu</a>
+                    </div>
+                </div>
+              
+
+              <!-- Results -->
+              <div class="row container-fluid paddingTopHeader">
+                <div id="results" class="col-md-12"></div>
+              </div>
+              <!-- Results -->
+
+                
+            
+              <!-- Simulation Editor -->        
+            <div class="row">
+                <div class = "col-md-offset-1 col-md-10">
+                  <section id = "editor" class="panel panel-default" style ="display:none">
+                       <div class="panel-heading">
+                          Simulation Editor
+                       </div>
+                       <section class ="controls panel-body">
+                          <div class="row paddingTop">
+                                <div class="col-xs-8">
+                                  <p> Frame Slot Duration (msec)</p>
+                                </div>
+                                <div class="col-xs-4">
+                                  <input value="0.05" id = "frameSlot" type="text"/>
+                                </div>
+                          </div>
+                          <div class="row paddingTop">
+                            <div class="col-xs-8">
+                              <p> Inter Node Distance (meters)</p>
+                            </div>
+                            <div class="col-xs-4">
+                              <input value="2000" id = "simDuration" type="text"/>
+                            </div>
+                          </div>
+                          <div class="row paddingTop">
+                            <div class="col-xs-8">
+                              <p> Transmission Rate (Mbps)</p>
+                            </div> 
+                           <div class="col-xs-4">
+                              <input value="100" id = "transmissionRate" type="text"/>
+                            </div>
+                          </div>
+                          <div class="row paddingTop">
+                            <div class="col-xs-8">
+                              <p> Packet Inter Arrival Time (Number of Slots)</p>
+                            </div>
+                            <div class="col-xs-4">
+                              <input value="2" id = "packetInterArrival" type="text"/>
+                            </div>
+                          </div>
+                       </section>
+                       <section class="panel-footer paddingTop">
+                          <input type="button" id="saveParameters" value="Save" onclick="onSaveParameters();" class = "btn btn-success">
+                       </section>
+              </section>  
+             </div>
+            </div>
+            <!-- Simulation Editor -->
+            </div>
+        </div>
+        <!-- /#page-content-wrapper -->
+
+    </div>
+    <!-- /#wrapper -->
+    <!-- Menu Toggle Script -->
+    <script>
+    $("#menu-toggle").click(function(e) {
+        e.preventDefault();
+        $("#wrapper").toggleClass("toggled");
+    });
+    $("a.results").hide();
+    </script>
+</body>
+   </body>
+</html>

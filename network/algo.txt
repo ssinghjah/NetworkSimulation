@@ -1,0 +1,33 @@
+Entities:
+Node
+Bus
+Packet Generator
+Packet
+
+
+Node Behaviour: 
+1.  The node checks if it has a packet to send.
+	If the the bus is idle, the node transmits a packet to the bus.
+	If the bus is busy, the node will wait till the bus is idle.
+
+2. If the node starts receiving another packet within a 2Tp interval, the nodes detects a collision, stops transmitting and backs off exponentially.
+   It marks the bus as busy.
+
+3. If the node does not receive another packet within a 2Tp interval, the node has successfully captured the channel. 
+   If Td < 2Tp, the node goes to step 1. Else, the node continues to tranmit for Td - 2Tp interval.
+   Then, the node stops transmitting and goes to step 1. 
+
+4. If the node receives an "idle" message from the bus, it marks the bus as free and goes to step 1
+
+
+Bus Behaviour:
+1. When a node starts transmitting a packet, the bus sends a "busy" message, along with the packet, to all other nodes after the corresponding propagation delays.
+   This corresponds to the transmission of the first bit of a packet to all nodes.
+   The bus maintains a counter of number of nodes that are currently transmitting. It increments this counter.
+   
+2. When the node stops transmitting to the message, the bus decrements the counter of number of nodes currently transmitting. 
+   If 0 nodes are currently transmitting on the bus, the bus sends an "idle" message to all other nodes after the corresponding propagation delays.
+   This correponds to delivery of the last bit of the last packet on the bus to all nodes.
+ 
+Packet Generator Behaviour:
+1. The packet generator keeps on generating packets using an exponential distribution with a mean of a packet every  "1/lambda" frameslot.

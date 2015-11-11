@@ -1,0 +1,15 @@
+.bar rect {
+  fill: orange;
+  shape-rendering: crispEdges;
+}
+
+.bar text {
+  fill: black;
+}
+
+.axis path, .axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
