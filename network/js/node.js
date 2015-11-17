@@ -97,7 +97,7 @@ Node.prototype.attemptToTransmit = function(){
         else 
         {
             this.transmitting = false;
-            this.onPacketSentSuccessfullyReq = this.setTimer(this.packets[this.currentPacket].nextAttemptTime - now).done(this.attemptToTransmit);
+            this.setTimer(this.packets[this.currentPacket].nextAttemptTime - now).done(this.attemptToTransmit);
         }
     }
 }
@@ -108,11 +108,6 @@ Node.prototype.onPacketSentSuccessfully = function(){
         this.transmitting = false;
         this.busBusy = false;
         bus.stopTransmitting(this.packets[this.currentPacket]);
-        // Calculate Propagation Delay Separately
-        if(this.packets[this.currentPacket].txTime === 0)
-        {
-            var k = 0;
-        }
             
         this.packets[this.currentPacket].rxTime =  this.packets[this.currentPacket].txTime + this.maxPropagationDelay + SETTINGS.TransmissionTime;
         this.currentPacket++;
@@ -157,4 +152,8 @@ Node.prototype.onMessage = function(sender, message){
         }  
         
     }
+}
+
+function nextChar(c) {
+    return String.fromCharCode(c.charCodeAt(0) + 1);
 }

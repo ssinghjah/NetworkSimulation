@@ -59,3 +59,4 @@ var onEventLog = function(){
 		$('.links').removeClass('active');
 		$('#eventLogLink').addClass('active');
 }
+

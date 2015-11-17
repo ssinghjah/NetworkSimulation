@@ -5,17 +5,22 @@ var log = [];
 
 function Simulate(){
     
+    // clear
     clearResults();
     clearLog();
     sim = new Sim();
     clearNodes();    
+    
+    // simulate
+    SETTINGS.UpdatefromUI();
     createNodes();
     createBus();
     initSim();
     sim.simulate(SETTINGS.SimTime);
-    console.log(sim.time());
+    
+    // display results
     displayResults(); 
-    //new RandomTester().run();
+    
 }
 
 
@@ -43,23 +48,24 @@ function clearNodes(){
     nodes = [];
 }
 
+
 function createNodes(){
 
-    var numNodes = 2;
-
-    var nodeA = new Node(0, "A", 0);
-    var nodeB = new Node(1, "B", SETTINGS.InterNodeDistance);
-
-    nodes.push(nodeA);
-    nodes.push(nodeB);
-    //nodes.push(nodeC);
-    //nodes.push(nodeD);
-
-    for(var i = 0; i < numNodes; i++)
-    {
-        nodes[i] = sim.addEntity(nodes[i]);
+    var numNodes = SETTINGS.NumberOfNodes;
+    var nodeId = 0;
+    var nodeName ="A";
+    var nodePosition = 0;
+    for(var i=0; i < numNodes; i++){
+        var node = new Node(nodeId, nodeName, nodePosition); 
+        node = sim.addEntity(node);
+        nodes.push(node);       
+        nodeName = nextChar(nodeName);
+        nodePosition += SETTINGS.InterNodeDistance;
+        nodeId++;
     }
 }
+
+
 
 
 function initSim(){

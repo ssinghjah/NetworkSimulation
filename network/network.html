@@ -35,9 +35,13 @@
         <div id="sidebar-wrapper">
             <ul class="sidebar-nav">
                 <li class="sidebar-brand">
-                    <a href="#" class="active" onclick="Simulate();">
-                        Simulate
-                    </a>
+                    <button href="#" class="btn btn btn-success" onclick="Simulate();">
+                         <span class="glyphicon glyphicon-triangle-right" aria-hidden="true"></span>
+                         <span>Simulate</span>
+                    </button>
+                </li>
+                <li>
+
                 </li>
                 <li>
                     <a href="#" id="editLink" class="links" onclick="onEdit();">Edit Parameters</a>
@@ -67,15 +71,20 @@
         <!-- Page Content -->
         <div id="page-content-wrapper">
             <div class="container-fluid">
+                
+                <!-- Toggle Menu -->
                 <div class="row">
-                    <div class="col-lg-12">
-                        <a href="#menu-toggle" class="btn btn-default" id="menu-toggle">Toggle Menu</a>
-                    </div>
+                  <div class="col-lg-12">
+                    <a href="#" id="menu-toggle">
+                         <span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span>
+                    </a>                        
+                  </div>
                 </div>
+                <!-- Toggle Menu -->
               
 
               <!-- Results -->
-              <div class="row container-fluid paddingTopHeader">
+              <div class="row addingTopHeader">
                 <div id="results" class="col-md-12"></div>
               </div>
               <!-- Results -->
@@ -91,7 +100,15 @@
                        </div>
                        <section class ="controls panel-body">
                           <div class="row paddingTop">
-                                <div class="col-xs-8">
+                            <div class="col-xs-8">
+                              <p> Number of Nodes</p>
+                            </div>
+                            <div class="col-xs-4">
+                              <input value="2" id = "numNodes" type="text"/>
+                            </div>
+                          </div>
+                          <div class="row paddingTop">
+                            <div class="col-xs-8">
                                   <p> Frame Slot Duration (msec)</p>
                                 </div>
                                 <div class="col-xs-4">
@@ -123,8 +140,8 @@
                             </div>
                           </div>
                        </section>
-                       <section class="panel-footer paddingTop">
-                          <input type="button" id="saveParameters" value="Save" onclick="onSaveParameters();" class = "btn btn-success">
+                        <section class="panel-footer paddingTop">
+                          <p>Settings are saved automatically. Just click on "Simulate" after changing the Settings</p>
                        </section>
               </section>  
              </div>
@@ -139,6 +156,8 @@
     <!-- Menu Toggle Script -->
     <script>
     $("#menu-toggle").click(function(e) {
+        $("#menu-toggle span").toggleClass("glyphicon-arrow-left");
+        $("#menu-toggle span").toggleClass("glyphicon-arrow-right");
         e.preventDefault();
         $("#wrapper").toggleClass("toggled");
     });
