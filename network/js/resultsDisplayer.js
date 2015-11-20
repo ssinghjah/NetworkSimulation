@@ -51,6 +51,6 @@ var addStatisticsCell = function(className){
  return statisticsCell;
 }
 
-var margin = {top: 10, right: 30, bottom: 50, left: 70},
+var margin = {top: 50, right: 30, bottom: 50, left: 70},
     width = 900 - margin.left - margin.right,
     height = 500 - margin.top - margin.bottom;

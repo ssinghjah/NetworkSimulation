@@ -1,6 +1,6 @@
 .paddingTop
 {
-	padding-top: 20px;
+	padding-top: 40px;
 }
 
 .paddingTopHeader
@@ -13,7 +13,11 @@
   outline:none !important;
 }
 
+.bolderFont{
+	font-weight: bolder;
+}
+
 svg {
 	width:100%;
-	border:1px solid steelblue;
+	border:1px solid gray;
 }

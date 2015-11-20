@@ -70,9 +70,10 @@ var createLinePlot = function(data, label, className){
 
           
        svg.append("text")
-          .attr("y", 16)
+          .attr("y", -20)
           .attr("x", 480)
           .attr("text-anchor", "middle")
+          .attr("class","bolderFont")
           .text(label);
 
 
