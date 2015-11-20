@@ -12,6 +12,24 @@ function Node(id, name, position){
     this.maxPropagationDelay;
     this.random = new Random((Math.random(1,800))*150);
     this.onPacketSentSuccessfullyReq;
+    this.nextAttemptReq;
+    this.nodesTransmittingOnTheBus = [];
+
+    this.recordNodeTransmissionStart = function(id){
+        if($.inArray(id, this.nodesTransmittingOnTheBus) === -1){
+            this.nodesTransmittingOnTheBus.push(id);
+        }
+    }
+
+    this.recordNodeTransmissionStop = function (id) {
+        this.nodesTransmittingOnTheBus = $.grep(this.nodesTransmittingOnTheBus, function(value) {
+            return value != id;
+        });
+    }
+
+    this.isBusBusy = function(){
+        return this.nodesTransmittingOnTheBus.length !== 0;
+    }
 
     this.setMaxPropagationDelay = function(){
         var maxDistance = 0;
@@ -71,17 +89,19 @@ Node.prototype.start = function(){
 
     this.packets = new PacketGenerator().generate(this.nodeId, this.random);
     this.setMaxPropagationDelay();
-    this.setTimer(this.packets[0].nextAttemptTime).done(this.attemptToTransmit);
+    this.nextAttemptReq = this.setTimer(this.packets[0].nextAttemptTime).done(this.attemptToTransmit);
 
 }
 
 
 
 Node.prototype.attemptToTransmit = function(){
+    
      if(this.currentPacket > this.packets.length)
         sim.log("Node " + this.name + " : No Packets in Queue");
-    else if(!this.busBusy)
+    else if(!this.isBusBusy())
     {
+
         var currentPacket = this.packets[this.currentPacket];
         var now = this.sim.time();
         if(currentPacket.nextAttemptTime <= now)
@@ -97,43 +117,46 @@ Node.prototype.attemptToTransmit = function(){
         else 
         {
             this.transmitting = false;
-            this.setTimer(this.packets[this.currentPacket].nextAttemptTime - now).done(this.attemptToTransmit);
+            sim.log("Node " + this.name + " : Attempting. Attempt after " + (this.packets[this.currentPacket].nextAttemptTime - now));
+            this.nextAttemptReq = this.setTimer(this.packets[this.currentPacket].nextAttemptTime - now).done(this.attemptToTransmit);
         }
+    }
+    else{
+        sim.log("Node " + this.name + " : Attempting. Bus Busy ");
     }
 }
 
 Node.prototype.onPacketSentSuccessfully = function(){
-      // If there is not collision yet, packet has been delivered 
+        // If there is not collision yet, packet has been delivered 
         sim.log("Node " + this.name + " : Packet Sent Successfully");
         this.transmitting = false;
         this.busBusy = false;
         bus.stopTransmitting(this.packets[this.currentPacket]);
-            
         this.packets[this.currentPacket].rxTime =  this.packets[this.currentPacket].txTime + this.maxPropagationDelay + SETTINGS.TransmissionTime;
         this.currentPacket++;
-        
-        var now = this.sim.time();
-        var nextAttemptDelay = SETTINGS.InfinitesimalDelay;
-        if(now > this.packets[this.currentPacket].nextAttemptTime)
-            nextAttemptDelay = now - this.packets[this.currentPacket].nextAttemptTime;
-        this.setTimer( nextAttemptDelay).done(this.attemptToTransmit);
     
 }
 
 Node.prototype.onMessage = function(sender, message){
         if(message.status === "free"){
-        // The bus is free
-        // Check if we have any  packets to transmit and transmit if so
-        sim.log("Node " + this.name + " : Bus Free");
-        this.busBusy = false;
-        this.attemptToTransmit();
+        
+        // A node has stopped transmitting
+        sim.log("Node " + this.name + " : Bus Free. Node " + message.src);
+        this.recordNodeTransmissionStop(message.src);
+
+        // If the bus is free and we have not scheduled a message for transmission, then do so.
+       if(!this.isBusBusy() && this.nextAttemptReq.deliverAt < this.sim.time())  
+        {  
+            this.attemptToTransmit();
+        }
     }
     else if ( message.status === "busy")
     {
+         sim.log("Node " + this.name + " : Bus Busy - Packet Received from node " + message.src);
         // The bus is busy and the node has received a packet
-        this.busBusy = true;
+        this.recordNodeTransmissionStart(message.src);
         
-        if(this.transmitting)
+        if(this.transmitting && message.src != this.nodeId)
         {
             // A packet is received while the node is transmitting.
             // So a collision has happened.
@@ -145,8 +168,8 @@ Node.prototype.onMessage = function(sender, message){
             currPacket.numCollisions++;
             var backoffDelay = this.backoffDelay(currPacket.numCollisions); 
             currPacket.nextAttemptTime = this.sim.time() + backoffDelay;
-            this.setTimer(backoffDelay).done(this.attemptToTransmit);
-            sim.log("Node " + this.name + " : Bus Busy - Packet Received from node " + message.packet.src);
+            this.nextAttemptReq = this.setTimer(backoffDelay).done(this.attemptToTransmit);
+           
             sim.log("Node " + this.name + " : Stopping Transmission");
             sim.log("Node " + this.name + " : Collision ! Next attempt after " +  backoffDelay);
         }  
