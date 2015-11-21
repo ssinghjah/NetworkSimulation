@@ -6,14 +6,14 @@ createSummary = function(){
     var heading = panel.append("div").attr({"class":"panel-heading"});
     heading.text("Summary ( Simulation Duration : " + ((sim.time()*SETTINGS.ConvertToSec).toFixed(1)) + " sec)");
 
-    var columns = ["Node","Packets Delivered","Throughput", "Average End to End Delay", "Average Inter Arrival Time","Collisions per packet"]
+    var columns = ["Node","Number of Attempts","Packets Delivered","Throughput", "Collisions per packet", "Average End to End Delay", "Average Inter Arrival Time"]
     
     var summary = [];
     var numNodes = nodes.length;
     for(var i = 0; i < numNodes; i++)
     {
        var node = nodes[i];
-       var queueDelay = 0, e2eDelay = 0, throughput = 0, collisionsPerPacket = 0, interArrivalTime = 0;
+       var queueDelay = 0, e2eDelay = 0, throughput = 0, collisionsPerPacket = 0, interArrivalTime = 0, numAttempts = 0;
 
        var packetsDeliveredList = $.grep(nodes[i].packets, function(packet){return packet.rxTime > 0;});
        var packetsDelivered = packetsDeliveredList.length;
@@ -29,18 +29,22 @@ createSummary = function(){
          e2eDelay = e2eDelay.toFixed(3) + " msec";
        }
 
+
        var interArrivalTimeList = $.map(nodes[i].packets, function(packet){return packet.interArrivalTime; });
        interArrivalTime = getAverage(interArrivalTimeList).toFixed(3) + " msec";
 
        var packetsTransmittedList = $.grep(nodes[i].packets, function(packet){return packet.txTime > 0;});
        if(packetsTransmittedList.length > 0){
+         $.each(packetsTransmittedList, function(index, packet){numAttempts += packet.numCollisions + 1;}); 
          var collisionsList = $.map(packetsTransmittedList, function(packet){return packet.numCollisions;});
-         var collisionsPerPacket = getAverage(collisionsList).toFixed(3);
+         collisionsPerPacket = getAverage(collisionsList).toFixed(3);
       }
+
 
        var collisions = 0;
        summary.push({
-        "Node":node.name, 
+        "Node":node.name,
+        "Number of Attempts":numAttempts, 
         "Packets Delivered":packetsDelivered,
         "Throughput":throughput, 
         "Average End to End Delay" : e2eDelay,
