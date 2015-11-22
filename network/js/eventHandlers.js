@@ -45,6 +45,14 @@ var onQueueDelay = function(){
 }
 
 
+var onCollisions = function(){
+		hideResultsAndEditor();
+		$('.collisions').show();
+		$('.links').removeClass('active');
+		$('#collisionsLink').addClass('active');
+}
+
+
 var onE2EDelay = function(){
 		hideResultsAndEditor();
 		$('.e2eDelay').show();

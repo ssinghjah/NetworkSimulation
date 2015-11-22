@@ -5,6 +5,7 @@ var log = [];
 
 function Simulate(){
     
+  
     // clear
     clearResults();
     clearLog();

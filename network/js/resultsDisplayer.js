@@ -3,7 +3,6 @@ displayResults = function( nodeAPackets, nodeBPackets){
     createSummary();
     createPerNodeResults();
     createEventLog();
-
     $("a.results").show();
     $("#results").show();
     onSummary();  
@@ -20,7 +19,7 @@ createPerNodeResults = function(){
     {
         values = $.map(nodes[i].packets, function(packet){return packet.interArrivalTime;});
         label = "Node " + nodes[i].name + ": Packet Inter Arrival Times (ms)";
-        createLinePlot(values,label, "interPacket results");
+        createLinePlot(values,label, "interPacket linePlot results");
         createHistogram(values, label + " Histogram", "interPacket results", 20);
     }   
 
@@ -31,7 +30,7 @@ createPerNodeResults = function(){
         if(packetsDelivered.length > 0){
             values = $.map(packetsDelivered, function(packet){return packet.txTime - packet.birthTime;});
             label = "Node " + nodes[i].name + ": Queue Delay (ms)";
-            createLinePlot(values, label, "queueDelay results");
+            createLinePlot(values, label, "queueDelay linePlot results");
             createHistogram(values, label + " Histogram", "queueDelay results", 20);
         }
     }   
@@ -54,16 +53,19 @@ createPerNodeResults = function(){
        {
             values = $.map(packetsTransmittedList, function(packet){return packet.numCollisions;}); 
             createHistogram(values, "Node " + nodes[i].name + ": Collisions Per Packet", "e2eDelay results", 20);
+            createPie(values, "Node " + nodes[i].name + ": Collisions Per Packet", "collisions results", "collisionsPie" + i);
         }
     }
 }
 
 // Common Stuff
 
-var addStatisticsCell = function(className){
+var addStatisticsCell = function(className, id){
 
  var statisticsArea = d3.select("#results");
  var statisticsCell = statisticsArea.append("div").attr({"class":"row paddingTop " + className}).append("div").attr({"class":"col-md-12"});
+ if(id !== null)
+    statisticsCell.attr("id",id);
  return statisticsCell;
 }
 

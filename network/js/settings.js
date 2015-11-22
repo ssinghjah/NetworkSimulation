@@ -14,7 +14,7 @@ SETTINGS.InterNodeDistance = 2000;
 SETTINGS.TransmissionTime = ((SETTINGS.PacketSize*8)/(SETTINGS.TransmissionRate*Math.pow(10,6)))*SETTINGS.ConvertToMilliSec; // In Milliseconds
 SETTINGS.NumberOfNodes = 2;
 SETTINGS.MaxPerNodeResultsToDisplay = 5;
-
+SETTINGS.RedCollisionsThreshold = 8;
 
 SETTINGS.UpdatefromUI = function(){
 
