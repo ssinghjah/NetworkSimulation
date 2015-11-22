@@ -72,6 +72,5 @@ function initSim(){
 
     sim.setLogger(function (str) {
        log.push({"Time":sim.time(),"Message":str});
-       console.log(str);
     });
 }

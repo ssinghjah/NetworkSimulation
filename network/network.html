@@ -3,6 +3,7 @@
         <title>Network Simulation</title>
         <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
         <link rel="stylesheet" type="text/css" href="css/bar.css">
+        <link rel="stylesheet" type="text/css" href="css/table.css">
         <link rel="stylesheet" type="text/css" href="css/linePlot.css">
         <link rel="stylesheet" type="text/css" href="css/generic.css">
         <link href="css/simple-sidebar.css" type="text/css" rel="stylesheet">
@@ -16,6 +17,7 @@
         <script type="text/javascript" src="js/seedGenerator.js"></script>
         <script type="text/javascript" src="js/packetGenerator.js"></script>
         <script type="text/javascript" src="js/histogram.js"></script>
+        <script type="text/javascript" src="js/table.js"></script>
         <script type="text/javascript" src="js/summary.js"></script>
         <script type="text/javascript" src="js/eventLog.js"></script>
         <script type="text/javascript" src="js/eventHandlers.js"></script>
@@ -50,16 +52,16 @@
                     <a href="#" id="summaryLink" class="links results" onclick="onSummary();">Summary</a>
                 </li>
                 <li>
-                    <a href="#" id="interPacketLink" class="links results" onclick="onInterPacket();">Inter Packet Arrival Time</a>
+                    <a href="#" id="interPacketLink" class="links pernode results" onclick="onInterPacket();">Inter Packet Arrival Time</a>
                 </li>
                 <li>
-                    <a href="#" id="queueDelayLink" class="links results" onclick="onQueueDelay();">Queue Delay</a>
+                    <a href="#" id="queueDelayLink" class="links pernode results" onclick="onQueueDelay();">Queue Delay</a>
                 </li>
                 <li>
-                    <a href="#" id="e2eDelayLink" class="links results" onclick="onE2EDelay();">End to End Delay</a>
+                    <a href="#" id="e2eDelayLink" class="links pernode results" onclick="onE2EDelay();">End to End Delay</a>
                 </li>
                 <li>
-                    <a href="#" id="eventLogLink" class="links results" onclick="onEventLog();">Event Log</a>
+                    <a href="#" id="eventLogLink" class="links pernode results" onclick="onEventLog();">Event Log</a>
                 </li>
                 <li>
                     <a href="#" id="aboutLink" class="links" onclick="onAbout();">About</a>
