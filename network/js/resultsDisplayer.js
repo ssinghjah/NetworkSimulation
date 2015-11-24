@@ -2,7 +2,7 @@ displayResults = function( nodeAPackets, nodeBPackets){
 
     createSummary();
     createPerNodeResults();
-    createEventLog();
+    //createEventLog();
     $("a.results").show();
     $("#results").show();
     onSummary();  
@@ -15,6 +15,7 @@ createPerNodeResults = function(){
     numNodes = numNodes > SETTINGS.MaxPerNodeResultsToDisplay ? SETTINGS.MaxPerNodeResultsToDisplay : numNodes;
     var values,label;
 
+    // Inter Arrival Times
     for(var i=0; i<numNodes; i++)
     {
         values = $.map(nodes[i].packets, function(packet){return packet.interArrivalTime;});
@@ -23,7 +24,7 @@ createPerNodeResults = function(){
         createHistogram(values, label + " Histogram", "interPacket results", 20);
     }   
 
-
+     // Queue Delays
     for(var i=0; i<numNodes; i++)
     {
         var packetsDelivered = $.grep(nodes[i].packets, function( packet ) {return packet.rxTime > 0;});
@@ -35,7 +36,7 @@ createPerNodeResults = function(){
         }
     }   
 
-
+    // End to End Delays
     for(var i=0; i<numNodes; i++)
     {
         var packetsDelivered = $.grep(nodes[i].packets, function( packet ) {return packet.rxTime > 0;});
@@ -45,14 +46,13 @@ createPerNodeResults = function(){
         }
     } 
 
-
+    // Collisions
     for(var i=0; i<numNodes; i++)
     {
        var packetsTransmittedList = $.grep(nodes[i].packets, function(packet){return packet.txTime > 0;});
        if(packetsTransmittedList.length > 0)
        {
             values = $.map(packetsTransmittedList, function(packet){return packet.numCollisions;}); 
-            createHistogram(values, "Node " + nodes[i].name + ": Collisions Per Packet", "e2eDelay results", 20);
             createPie(values, "Node " + nodes[i].name + ": Collisions Per Packet", "collisions results", "collisionsPie" + i);
         }
     }
