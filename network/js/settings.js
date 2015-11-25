@@ -5,7 +5,7 @@ SETTINGS.FrameSlot = 0.050; //milli seconds
 SETTINGS.PacketSize = 1000; // In bytes
 SETTINGS.TransmissionRate = 100 // In Mbps
 SETTINGS.MeanInterPacket = 2;
-SETTINGS.SimTime = 1000;
+SETTINGS.SimTime = 1000; // In milli seconds
 SETTINGS.InfinitesimalDelay = 0.000001;
 SETTINGS.PropagationSpeed = 2*Math.pow(10,5);
 SETTINGS.ConvertToSec = Math.pow(10,-3);
@@ -25,5 +25,6 @@ SETTINGS.UpdatefromUI = function(){
 	SETTINGS.MeanInterPacket = parseFloat(document.getElementById('packetInterArrival').value); // In Frame Slots
 	SETTINGS.TransmissionTime = ((SETTINGS.PacketSize*8)/(SETTINGS.TransmissionRate*Math.pow(10,6)))*SETTINGS.ConvertToMilliSec; 
 	SETTINGS.NumberOfNodes = parseFloat(document.getElementById('numNodes').value);
+	SETTINGS.SimTime = parseFloat(document.getElementById('simDuration').value) * 1000; // In Milli Seconds
 
 }
