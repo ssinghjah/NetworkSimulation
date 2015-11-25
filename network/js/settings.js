@@ -20,7 +20,7 @@ SETTINGS.RedCollisionsThreshold = 8; // Collisions per packet greater than this 
 SETTINGS.UpdatefromUI = function(){
 
 	SETTINGS.FrameSlot = parseFloat(document.getElementById('frameSlot').value); //milli seconds
-	SETTINGS.InterNodeDistance = parseFloat(document.getElementById('simDuration').value); // In bytes
+	SETTINGS.InterNodeDistance = parseFloat(document.getElementById('interNode').value); // In bytes
 	SETTINGS.TransmissionRate = parseFloat(document.getElementById('transmissionRate').value); // In Mbps
 	SETTINGS.MeanInterPacket = parseFloat(document.getElementById('packetInterArrival').value); // In Frame Slots
 	SETTINGS.TransmissionTime = ((SETTINGS.PacketSize*8)/(SETTINGS.TransmissionRate*Math.pow(10,6)))*SETTINGS.ConvertToMilliSec; 

@@ -48,13 +48,15 @@ var pie = new d3pie(id, {
 	},
 	"labels": {
 		"outer": {
-			"pieDistance": 32
+			"pieDistance": 32,
+			"fontSize": 13
 		},
 		"inner": {
 			"format": "value"
 		},
 		"mainLabel": {
-			"font": "verdana"
+			"font": "verdana",
+			"fontSize": 13
 		},
 		"percentage": {
 			"color": "#e1e1e1",
@@ -63,7 +65,8 @@ var pie = new d3pie(id, {
 		},
 		"value": {
 			"color": "#ffffff",
-			"font": "verdana"
+			"font": "verdana",
+			"fontSize": 13,
 		},
 		"lines": {
 			"enabled": true,

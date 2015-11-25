@@ -1,6 +1,5 @@
 createSummary = function(){
     
-
     var packetTransmissionTime = (SETTINGS.TransmissionTime)*SETTINGS.ConvertToSec;
     var simTime = (SETTINGS.SimTime * SETTINGS.ConvertToSec);
     var summary = [];
