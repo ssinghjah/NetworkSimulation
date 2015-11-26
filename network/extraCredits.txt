@@ -1,0 +1,6 @@
+1. Checksum implementation for error detection.
+2. Parity bit implementation for error detection.
+3. Hamming Code.
+4. CRC
+
+Compare Error Detection and correction of each

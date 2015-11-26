@@ -1,0 +1,42 @@
+Link State Routing Algo:
+Reference : https://en.wikipedia.org/wiki/Link-state_routing_protocol
+
+Cost of Links
+1. Each link has a cost - distance and packet error rate.
+2. Each node knows the cost of the links connected to it.
+
+Neighbour Discovery
+1. Each node keeps sending "Hello" messages on all of the links to which it is connected. 
+   This message includes the node's address.
+2. Other nodes on the same link reply to the "Hello" message with their own address.
+3. Thus, each node will come to know the address of its neighbouring nodes
+4. If the node does not receive a response, it assumes that link is broken.
+
+Link State Advertisement :
+1. Each node floods it neighbouring nodes with the cost of the links and the nodes to which it is connected.
+2. Each neighbouring node, in turn forwards this information again to its neighbours.
+3. In this way, each node receives information about the whole topology.
+
+Route Selection:
+1. Once each node gets the information about the whole topology, it builds 2 least cost path - one to minimize distance and 
+   another to minimize packet loss.
+2. Each end terminal can choose to minimize either propagation delay (e.g. real time VoIP calls need to minimize delay and are ok with packet loss )
+   or packet loss ( e.g. FTP cannot tolerate packet loss as the file will get corrupted. Some delay is accepted).
+3. The approproate route will be chosen.
+
+Cases:
+1. Link failure - Link failure is detected by the "Hello" messages. The node will advertise this link failure and after some time, all nodes will 
+   get to know about the failure. The routes will be updated accordingly.
+2. Change in link Cost - The change in link cost will be advertised and routes will be updated. 
+
+Inputs from User :
+1. User will give the cost of each link - distance and packet error rate.
+2. User can fail a link at a time instant "t", where t is less than the simulation duration. The routes will be recalculated.
+3. User can change the cost of a link at time instant "t", where t is less than the simulation duration. The routes will be recalculated.
+4. The user can change the processing delay at each node and the size of buffer within the router. 
+   Larger buffers will minimize packet loss but increase end to end delay.
+5. User can decide the application type at each end terminal.
+
+Statistics to Measure & Display :
+1. Packets dropped due to buffer overflow at each router.
+2. Packets in error. These errors will be detected if we use Checksum.
