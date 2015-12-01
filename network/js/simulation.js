@@ -19,6 +19,7 @@ function Simulate(){
     initSim();
     sim.simulate(SETTINGS.SimTime);
     
+    new DijikstrasAlgo().run(Topology,0);
     // display results
     displayResults(); 
     
@@ -73,5 +74,6 @@ function initSim(){
 
     sim.setLogger(function (str) {
        log.push({"Time":sim.time(),"Message":str});
+       console.log(str);
     });
 }

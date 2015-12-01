@@ -19,7 +19,7 @@ Bus.prototype.stopTransmitting= function(packet){
             
             distance = Math.abs(srcNode.position - nodes[i].position);
             propagationTime = distance / SETTINGS.PropagationSpeed;
-            this.send( {status:'free', src: src}, propagationTime, nodes[i]);
+            this.send( {packet:packet, status:'free', src: src}, propagationTime, nodes[i]);
         
         }
 
@@ -43,7 +43,7 @@ Bus.prototype.transmit = function(packet){
             
             distance = Math.abs(srcNode.position - nodes[i].position);
             propagationTime = distance / SETTINGS.PropagationSpeed;
-            this.send( {packet, status:'busy', src:src}, propagationTime, nodes[i]);
+            this.send( {packet:packet, status:'busy', src:src}, propagationTime, nodes[i]);
         
         }    
 }

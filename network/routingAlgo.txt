@@ -29,6 +29,14 @@ Cases:
    get to know about the failure. The routes will be updated accordingly.
 2. Change in link Cost - The change in link cost will be advertised and routes will be updated. 
 
+Congestion and Queues :
+1. Each router has a queue of finite length that will buffer packets in case of congestion.
+2. If the buffer is full and the number of packets dropped exceed a configurable value, the router will request the sender to change the path.
+
+Priority:
+1. When many packets are present in the router's buffer, the highest priority will be served first. 
+   E.g. One end terminal may use the network to play Counter Strike over the LAN. Another end terminal may use it to serve Indian Railway Ticket reservation requests. In case of congestion, the second terminal will be given priority.
+
 Inputs from User :
 1. User will give the cost of each link - distance and packet error rate.
 2. User can fail a link at a time instant "t", where t is less than the simulation duration. The routes will be recalculated.
@@ -38,5 +46,13 @@ Inputs from User :
 5. User can decide the application type at each end terminal.
 
 Statistics to Measure & Display :
-1. Packets dropped due to buffer overflow at each router.
-2. Packets in error. These errors will be detected if we use Checksum.
+1. Number of Packets dropped due to buffer overflow at each router.
+2. Number of Packets in error due to the link. 
+3. Variation in the Path of packets with time due to link failure or change in costs. This will illustrate dynamic routing. 
+   We will calculate the number of packets flowing across each link for intervals of say t seconds. 
+   E.g. Number of packets through link A from t = 0.1 to 0.2 sec, from 0.2 to 0.3 sec, etc.  
+   A heat map will show the above info - shades of red for higher number of packets and shades of blue for lower.
+4. Packets delivered per end terminal - already implemented.
+5. Packets delivered per application - Higher priority applications should have a higher value.
+
+

@@ -1,6 +1,11 @@
+Extra Credit:
 1. Checksum implementation for error detection.
 2. Parity bit implementation for error detection.
 3. Hamming Code.
 4. CRC
 
-Compare Error Detection and correction of each
+Compare Error Detection and correction of each.
+GUI:
+1. Show packet flow. Diff colors for packets
+2. Heat Map for Congestion
+3. https://github.com/mbostock/d3/wiki/Gallery
