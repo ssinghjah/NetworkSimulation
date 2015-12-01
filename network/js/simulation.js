@@ -1,11 +1,10 @@
-var bus = new Bus("bus1");
 var sim;
 var nodes = [];
 var log = [];
+var routers = [];
 
 function Simulate(){
     
-  
     // clear
     clearResults();
     clearLog();
@@ -15,19 +14,20 @@ function Simulate(){
     // simulate
     SETTINGS.UpdatefromUI();
     createNodes();
+    createRouters();
     createBus();
     initSim();
     sim.simulate(SETTINGS.SimTime);
     
-    new DijikstrasAlgo().run(Topology,0);
+    new DijikstrasAlgo().run(0, Topology);
     // display results
-    displayResults(); 
-    
+    displayResults();     
 }
 
-
 function createBus(){
+    bus = new Bus("bus1", [0,1]);
     bus = sim.addEntity(bus);
+
 }
 
 
@@ -68,7 +68,16 @@ function createNodes(){
 }
 
 
-
+function createRouters(){
+    var numRouters = 4;
+    var routerId = 0;
+    for(var i=0; i < numRouters; i++){
+        var router = new Router(routerId, "R" + (i+1)); 
+        router = sim.addEntity(router);
+        routers.push(router);       
+        routerId++;
+    }
+}
 
 function initSim(){
 

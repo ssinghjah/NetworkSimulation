@@ -63,18 +63,18 @@
 
 	var addNextHop = function( source, routingTable){
 
-		var numEntries = routingTable.length;
+		var numEntries = routingTable.entries.length;
 		for(var i = 0; i < numEntries; i++)
 		{
-			if(routingTable[i].entries.dest !== source)
+			if(routingTable.entries[i].dest !== source)
 			{
 				// Move backwards from predecessor until we reach the source node.
 				var predecessor = i;
-				while(routingTable[predecessor].predecessor !== source){
-					predecessor = routingTable[i].predecessor;
+				while(routingTable.entries[predecessor].predecessor !== source){
+					predecessor = routingTable.entries[predecessor].predecessor;
 				}
 				// Store the next hop.
-				routingTable[i].nextHop = predecessor;
+				routingTable.entries[i].nextHop = predecessor;
 			}
 		}
 	}

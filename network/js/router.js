@@ -6,7 +6,7 @@ function Router( id, name, position){
 	var busy = false;
 
 	this.onMessage = function(sender,message){
-	if(message.status === "free"){
+	if( message.status === "free"){
 
      	// If Forwarding table has entry, add to queue
      	// If router is not busy, forward
@@ -24,5 +24,9 @@ function Router( id, name, position){
 		// look up next hop in forwarding table
 		// wait for Processing delay
 		// send to output
+	}
+
+	this.start = function(){
+		
 	}
 }

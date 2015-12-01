@@ -1,12 +1,10 @@
-function Bus(name){
+function Bus(name, routerIds){
 
     this.name = name;
-  
+    var routerIds = routerIds;
 
-} 
-
-Bus.prototype.stopTransmitting= function(packet){
-
+    this.stopTransmitting = function(packet)
+    {
 
         var src = packet.src;
         var srcNode = nodes[packet.src];
@@ -16,21 +14,24 @@ Bus.prototype.stopTransmitting= function(packet){
         var distance, propagationTime;
         for(var i = 0; i < numNodes; i++)
         {
-            
             distance = Math.abs(srcNode.position - nodes[i].position);
             propagationTime = distance / SETTINGS.PropagationSpeed;
             this.send( {packet:packet, status:'free', src: src}, propagationTime, nodes[i]);
-        
         }
 
-}
+        var numRouters = routerIds.length;
+        var distance, propagationTime;
+        for(var i = 0; i < numNodes; i++)
+        {
+            var routerId = routerIds[i];
+            var router = routers[routerId];
+            distance = 2000;
+            propagationTime = distance / SETTINGS.PropagationSpeed;
+            this.send( {packet:packet, status:'free', src: src}, propagationTime, router);
+        }
+    }
 
-Bus.prototype.start = function(){
-      this.numNodesTransmitting = 0;    
-}
-
-
-Bus.prototype.transmit = function(packet){
+    this.transmit = function(packet){
 
         var src = packet.src;
         var srcNode = nodes[packet.src];
@@ -46,4 +47,12 @@ Bus.prototype.transmit = function(packet){
             this.send( {packet:packet, status:'busy', src:src}, propagationTime, nodes[i]);
         
         }    
+    }
+} 
+
+
+Bus.prototype.start = function(){    
 }
+
+
+Bus.prototype
