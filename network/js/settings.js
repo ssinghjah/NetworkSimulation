@@ -15,7 +15,7 @@ SETTINGS.TransmissionTime = ((SETTINGS.PacketSize*8)/(SETTINGS.TransmissionRate*
 SETTINGS.NumberOfNodes = 2;
 SETTINGS.MaxPerNodeResultsToDisplay = 5;
 SETTINGS.RedCollisionsThreshold = 8; // Collisions per packet greater than this value are considered to be "red" - in the danger zone. 
-SETTINGS.RouterProcessingTime = 0.030; 									 
+SETTINGS.RouterProcessingTime = 0.003;  									 
 
 SETTINGS.UpdatefromUI = function(){
 

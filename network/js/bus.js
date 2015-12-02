@@ -1,7 +1,8 @@
-function Bus(name, routerIds){
+function Bus(name, nodeIds, routerIds){
 
     this.name = name;
     var routerIds = routerIds;
+    var nodeIds = nodeIds;
 
     this.stopTransmitting = function(packet)
     {
@@ -10,24 +11,25 @@ function Bus(name, routerIds){
         var srcNode = nodes[packet.src];
 
         // Stop message that the bus is free to each node after the corresponding propagation delay
-        var numNodes = nodes.length;
+        var numNodes = nodeIds.length;
         var distance, propagationTime;
         for(var i = 0; i < numNodes; i++)
         {
-            distance = Math.abs(srcNode.position - nodes[i].position);
+            var nodeId = nodeIds[i];
+            distance = Math.abs(srcNode.position - nodes[nodeId].position);
             propagationTime = distance / SETTINGS.PropagationSpeed;
-            this.send( {packet:packet, status:'free', src: src}, propagationTime, nodes[i]);
+            this.send( {packet:packet, status:'stopTrans', src: src}, propagationTime, nodes[nodeId]);
         }
 
         var numRouters = routerIds.length;
         var distance, propagationTime;
-        for(var i = 0; i < numNodes; i++)
+        for(i = 0; i < numNodes; i++)
         {
             var routerId = routerIds[i];
             var router = routers[routerId];
-            distance = 2000;
+            distance = 2010;
             propagationTime = distance / SETTINGS.PropagationSpeed;
-            this.send( {packet:packet, status:'free', src: src}, propagationTime, router);
+            this.send( {packet:packet, status:'stopTrans', src: src}, propagationTime, router);
         }
     }
 
@@ -44,7 +46,7 @@ function Bus(name, routerIds){
             
             distance = Math.abs(srcNode.position - nodes[i].position);
             propagationTime = distance / SETTINGS.PropagationSpeed;
-            this.send( {packet:packet, status:'busy', src:src}, propagationTime, nodes[i]);
+            this.send( {packet:packet, status:'startTrans', src:src}, propagationTime, nodes[i]);
         
         }    
     }
@@ -53,6 +55,3 @@ function Bus(name, routerIds){
 
 Bus.prototype.start = function(){    
 }
-
-
-Bus.prototype

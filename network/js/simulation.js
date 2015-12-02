@@ -9,7 +9,8 @@ function Simulate(){
     clearResults();
     clearLog();
     sim = new Sim();
-    clearNodes();    
+    clearNodes();
+    clearRouters();    
     
     // simulate
     SETTINGS.UpdatefromUI();
@@ -18,21 +19,22 @@ function Simulate(){
     createBus();
     initSim();
     sim.simulate(SETTINGS.SimTime);
+
+    alert("R3 delivered " + routers[2].packetsDelivered);
+    alert("R4 delivered " + routers[3].packetsDelivered);
     
-    new DijikstrasAlgo().run(0, Topology);
     // display results
     displayResults();     
 }
 
 function createBus(){
-    bus = new Bus("bus1", [0,1]);
+    bus = new Bus("bus1", [0,1], [0,1]);
     bus = sim.addEntity(bus);
 
 }
 
 
 function clearResults(){
-
     $("#results").hide();
     var element = document.getElementById("results");
     while (element.hasChildNodes()) 
@@ -50,6 +52,9 @@ function clearNodes(){
     nodes = [];
 }
 
+function clearRouters(){
+    routers = [];
+}
 
 function createNodes(){
 
@@ -57,7 +62,8 @@ function createNodes(){
     var nodeId = 0;
     var nodeName ="A";
     var nodePosition = 0;
-    for(var i=0; i < numNodes; i++){
+    for(var i = 0; i < numNodes; i++)
+    {
         var node = new Node(nodeId, nodeName, nodePosition); 
         node = sim.addEntity(node);
         nodes.push(node);       
@@ -66,7 +72,6 @@ function createNodes(){
         nodeId++;
     }
 }
-
 
 function createRouters(){
     var numRouters = 4;

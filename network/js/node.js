@@ -138,10 +138,9 @@ Node.prototype.onPacketSentSuccessfully = function(){
 }
 
 Node.prototype.onMessage = function(sender, message){
-        if(message.status === "free"){
+        if(message.status === "stopTrans"){
         
         // A node has stopped transmitting
-        sim.log("Node " + this.name + " : Bus Free. Node " + message.src);
         this.recordNodeTransmissionStop(message.src);
 
         // If the bus is free and we have not scheduled a message for transmission, then do so.
@@ -150,9 +149,8 @@ Node.prototype.onMessage = function(sender, message){
             this.attemptToTransmit();
         }
     }
-    else if ( message.status === "busy")
+    else if ( message.status === "startTrans")
     {
-         sim.log("Node " + this.name + " : Bus Busy - Packet Received from node " + message.src);
         // The bus is busy and the node has received a packet
         this.recordNodeTransmissionStart(message.src);
         
