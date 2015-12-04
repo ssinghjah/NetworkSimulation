@@ -69,6 +69,23 @@ var addStatisticsCell = function(className, id){
  return statisticsCell;
 }
 
+function bitsToSize(bits) {
+   var sizes = ['Bps', 'Kbps', 'Mbps', 'Gbps', 'Tbps'];
+   if (bits == 0) return '0 Bps';
+   var i = parseInt(Math.floor(Math.log(bits) / Math.log(1000)));
+   return Math.round(bits / Math.pow(1000, i), 2) + ' ' + sizes[i];
+};
+ 
+
+function getAverage(array){
+    var total = 0;
+    var length = array.length;
+    for (var i = 0; i < length; i++) {
+        total += array[i];
+    }
+    return total / length;
+}
+
 var margin = {top: 50, right: 30, bottom: 50, left: 70},
     width = 900 - margin.left - margin.right,
     height = 500 - margin.top - margin.bottom;

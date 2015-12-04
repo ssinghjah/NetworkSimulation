@@ -21,13 +21,7 @@ function Simulate(){
     createRouters();
     initSim();
     sim.simulate(SETTINGS.SimTime);
-
-    alert("R3 delivered " + routers[2].packetsDelivered);
-    alert("R4 delivered " + routers[3].packetsDelivered);
-
-    alert("R1 delivered " + routers[0].packetsDelivered);
-    alert("R2 delivered " + routers[1].packetsDelivered);
-    
+        
     // display results
     displayResults();     
 }
