@@ -27,7 +27,7 @@ createSummary = function(){
           var destination = nodes[j];
           var queueDelay = 0, e2eDelay = 0, throughput = 0, collisionsPerPacket = 0, interArrivalTime = 0, numAttempts = 0;
 
-          var packetsDeliveredList = $.grep(nodes[i].packets, function(packet){return packet.rxTime > 0 && packet.dest == j ;});
+          var packetsDeliveredList = $.grep(nodes[i].packets, function(packet){return packet.delivered && packet.dest == j ;});
           var packetsDelivered = packetsDeliveredList.length;
 
            // End to End Delay

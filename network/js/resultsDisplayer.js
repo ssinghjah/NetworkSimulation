@@ -27,7 +27,7 @@ createPerNodeResults = function(){
      // Queue Delays
     for(var i=0; i<numNodes; i++)
     {
-        var packetsDelivered = $.grep(nodes[i].packets, function( packet ) {return packet.rxTime > 0;});
+        var packetsDelivered = $.grep(nodes[i].packets, function( packet ) {return packet.delivered;});
         if(packetsDelivered.length > 0){
             values = $.map(packetsDelivered, function(packet){return packet.txTime - packet.birthTime;});
             label = "Node " + nodes[i].name + ": Queue Delay (ms)";

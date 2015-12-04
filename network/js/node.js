@@ -131,6 +131,9 @@ Node.prototype.onPacketSentSuccessfully = function(){
         this.transmitting = false;
         this.bus.stopTransmitting(this.packets[this.currentPacket]);
         this.packets[this.currentPacket].rxTime =  this.packets[this.currentPacket].txTime + this.maxPropagationDelay + SETTINGS.TransmissionTime;
+        if($.inArray(this.packets[this.currentPacket].dest, NodeSubnetMap[this.nodeId]) !== -1) {
+            this.packets[this.currentPacket].delivered = true;
+        }
         this.currentPacket++;
     
 }

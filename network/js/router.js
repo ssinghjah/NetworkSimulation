@@ -36,6 +36,7 @@ function Router( id, name, position, ignoreDest){
 		{
 			console.log(name + " Packet received : From Node" + nodes[message.packet.src].name + ", To: Node " + (message.packet.dest + 1));
 			this.packetsDelivered ++;
+			message.packet.delivered = true;
 			return;
 		}
 
@@ -69,6 +70,7 @@ function Router( id, name, position, ignoreDest){
 
 			this.setTimer(SETTINGS.RouterProcessingTime).done(function(){
 				
+				queueEntry.packet.rxTime += SETTINGS.RouterProcessingTime;				
 				// send packet to next hop after processing delay
 				this.send( {packet : queueEntry.packet, status:"fromRouter"}, SETTINGS.InfinitesimalDelay, routers[queueEntry.nextHop]);
 				
