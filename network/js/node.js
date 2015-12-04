@@ -3,7 +3,7 @@ function Node(id, name, position){
     this.position = position;
     this.name = name;
     this.nodeId = id;
-    this.busBusy = false;   
+    this.bus = buses[NodeBusMap[this.nodeId]];
     this.transmitting = false;
     this.packets = [];
     this.currentPacket = 0;
@@ -108,9 +108,8 @@ Node.prototype.attemptToTransmit = function(){
         {
             sim.log("Node " + this.name + " : Transmitting Packet");
             this.transmitting = true;
-            this.busBusy = true;
             currentPacket.txTime = this.sim.time();          
-            bus.transmit(currentPacket);
+            this.bus.transmit(currentPacket);
             // If the Node does not detect collision till 2*Max Tp, it assumes that the packet is sent successfully.
             this.onPacketSentSuccessfullyReq = this.setTimer((2*this.maxPropagationDelay + SETTINGS.TransmissionTime)).done(this.onPacketSentSuccessfully);
         }
@@ -130,8 +129,7 @@ Node.prototype.onPacketSentSuccessfully = function(){
         // If there is not collision yet, packet has been delivered 
         sim.log("Node " + this.name + " : Packet Sent Successfully");
         this.transmitting = false;
-        this.busBusy = false;
-        bus.stopTransmitting(this.packets[this.currentPacket]);
+        this.bus.stopTransmitting(this.packets[this.currentPacket]);
         this.packets[this.currentPacket].rxTime =  this.packets[this.currentPacket].txTime + this.maxPropagationDelay + SETTINGS.TransmissionTime;
         this.currentPacket++;
     
@@ -162,7 +160,7 @@ Node.prototype.onMessage = function(sender, message){
             var currPacket = this.packets[this.currentPacket];
             this.transmitting = false;
             this.onPacketSentSuccessfullyReq.cancel();
-            bus.stopTransmitting(currPacket);
+            this.bus.stopTransmitting(currPacket);
             currPacket.numCollisions++;
             var backoffDelay = this.backoffDelay(currPacket.numCollisions); 
             currPacket.nextAttemptTime = this.sim.time() + backoffDelay;

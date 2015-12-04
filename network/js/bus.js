@@ -4,6 +4,7 @@ function Bus(name, nodeIds, routerIds){
     var routerIds = routerIds;
     var nodeIds = nodeIds;
 
+
     this.stopTransmitting = function(packet)
     {
 
@@ -39,15 +40,14 @@ function Bus(name, nodeIds, routerIds){
         var srcNode = nodes[packet.src];
 
         // Send packet to each node after the corresponding propagation delay
-        var numNodes = nodes.length;
+        var numNodes = nodeIds.length;
         var distance, propagationTime;
         for(var i = 0; i < numNodes; i++)
         {
-            
-            distance = Math.abs(srcNode.position - nodes[i].position);
+            var nodeId = nodeIds[i];
+            distance = Math.abs(srcNode.position - nodes[nodeId].position);
             propagationTime = distance / SETTINGS.PropagationSpeed;
-            this.send( {packet:packet, status:'startTrans', src:src}, propagationTime, nodes[i]);
-        
+            this.send( {packet:packet, status:'startTrans', src:src}, propagationTime, nodes[nodeId]);
         }    
     }
 } 

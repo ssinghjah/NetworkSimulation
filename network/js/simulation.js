@@ -2,6 +2,7 @@ var sim;
 var nodes = [];
 var log = [];
 var routers = [];
+var buses = [];
 
 function Simulate(){
     
@@ -11,26 +12,35 @@ function Simulate(){
     sim = new Sim();
     clearNodes();
     clearRouters();    
-    
+    clearBuses();
+
     // simulate
     SETTINGS.UpdatefromUI();
+    createBuses();
     createNodes();
     createRouters();
-    createBus();
     initSim();
     sim.simulate(SETTINGS.SimTime);
 
     alert("R3 delivered " + routers[2].packetsDelivered);
     alert("R4 delivered " + routers[3].packetsDelivered);
+
+    alert("R1 delivered " + routers[0].packetsDelivered);
+    alert("R2 delivered " + routers[1].packetsDelivered);
     
     // display results
     displayResults();     
 }
 
-function createBus(){
-    bus = new Bus("bus1", [0,1], [0,1]);
-    bus = sim.addEntity(bus);
+function createBuses(){
 
+    var bus1 = new Bus("bus1", [0,1], [0,1]);
+    bus1 = sim.addEntity(bus1);
+    buses.push(bus1);
+
+    var bus2 = new Bus("bus2", [2,3], [2,3]);
+    bus2 = sim.addEntity(bus2);
+    buses.push(bus2);
 }
 
 
@@ -51,6 +61,12 @@ function clearLog(){
 function clearNodes(){
     nodes = [];
 }
+
+
+function clearBuses(){
+    buses = [];
+}
+
 
 function clearRouters(){
     routers = [];
