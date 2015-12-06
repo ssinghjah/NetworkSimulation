@@ -59,7 +59,6 @@ createPerNodeResults = function(){
 }
 
 // Common Stuff
-
 var addStatisticsCell = function(className, id){
 
  var statisticsArea = d3.select("#results");

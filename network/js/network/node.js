@@ -30,7 +30,7 @@ Node.prototype.start = function(){
 
     this.packets = new PacketGenerator().generate(this.nodeId, new Random((Math.random(1,800))*150));
     this.setMaxPropagationDelay();
-    this.csmaCd = new CSMACD( this.name, buses[NodeBusMap[this.nodeId]], this.maxPropagationDelay, this.onPacketSent, this.onBusFree, this);
+    this.csmaCd = new CSMACD( this.name, buses[NodeBusMap[this.nodeId]], this.maxPropagationDelay, this.onPacketAttempt, this.onPacketSent, this.onBusFree, this);
     this.csmaCd = sim.addEntity(this.csmaCd);
     this.setTimer(0).done(this.csmaCd.attemptToTransmit,this.csmaCd).setData(this.packets[this.currentPacket])
 }
@@ -49,6 +49,13 @@ Node.prototype.onBusFree = function(){
         
         // Transmit next packet
         this.setTimer(0).done(this.csmaCd.attemptToTransmit,this.csmaCd).setData(this.packets[this.currentPacket]);
+}
+
+
+Node.prototype.onPacketAttempt = function(packet){
+        
+        packet.txTime = this.sim.time();
+        // Update the transmitted time 
 }
 
 

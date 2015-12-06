@@ -1,4 +1,4 @@
-function CSMACD( name, bus, maxPropagationDelay, packetSentCallback, busFreeCallback, context){
+function CSMACD( name, bus, maxPropagationDelay, packetAttemptCallback, packetSentCallback, busFreeCallback, context){
 
 	var transmitting = false;
     var context = context;
@@ -9,9 +9,11 @@ function CSMACD( name, bus, maxPropagationDelay, packetSentCallback, busFreeCall
 	var maxPropagationDelay = maxPropagationDelay;
 	var nodesTransmittingOnTheBus = [];
 	var packet;
-	var packetSentCallback = packetSentCallback;
+	var packetAttemptCallback = packetAttemptCallback;
+    var packetSentCallback = packetSentCallback;
 	var busFreeCallback = busFreeCallback;
-	// Needed for Sim.js
+	
+    // Needed for Sim.js
 	this.start = function(){
 	}
 
@@ -26,7 +28,7 @@ function CSMACD( name, bus, maxPropagationDelay, packetSentCallback, busFreeCall
 	            sim.log("Node " + name + " : Transmitting Packet");
 	            transmitting = true;
 	            // Let node update txTime
-	            packet.txTime = this.sim.time();          
+	            packetAttemptCallback.call(context, packet);          
 	            bus.transmit(packet);
 	            // If the Node does not detect collision till 2*Max Tp, it assumes that the packet is sent successfully.
 	            onPacketSentReq = this.setTimer((2*maxPropagationDelay + SETTINGS.TransmissionTime)).done(onPacketSent);
