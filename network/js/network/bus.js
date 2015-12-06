@@ -11,7 +11,7 @@ function Bus(name, nodeIds, routerIds){
         var src = packet.src;
         var srcNode = nodes[packet.src];
 
-        // Stop message that the bus is free to each node after the corresponding propagation delay
+        // Send message that the transmission of the packet has stopped to each node after the corresponding propagation delay
         var numNodes = nodeIds.length;
         var distance, propagationTime;
         for(var i = 0; i < numNodes; i++)
@@ -19,9 +19,10 @@ function Bus(name, nodeIds, routerIds){
             var nodeId = nodeIds[i];
             distance = Math.abs(srcNode.position - nodes[nodeId].position);
             propagationTime = distance / SETTINGS.PropagationSpeed;
-            this.send( {packet:packet, status:'stopTrans', src: src}, propagationTime, nodes[nodeId]);
+            this.send( {packet:packet, status:'stopTrans', src: src}, propagationTime, nodes[nodeId].csmaCd);
         }
 
+        // Inform routers
         var numRouters = routerIds.length;
         var distance, propagationTime;
         for(i = 0; i < numNodes; i++)
@@ -47,7 +48,7 @@ function Bus(name, nodeIds, routerIds){
             var nodeId = nodeIds[i];
             distance = Math.abs(srcNode.position - nodes[nodeId].position);
             propagationTime = distance / SETTINGS.PropagationSpeed;
-            this.send( {packet:packet, status:'startTrans', src:src}, propagationTime, nodes[nodeId]);
+            this.send( {packet:packet, status:'startTrans', src:src}, propagationTime, nodes[nodeId].csmaCd);
         }    
     }
 } 
