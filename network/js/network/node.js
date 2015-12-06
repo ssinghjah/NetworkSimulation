@@ -32,7 +32,7 @@ Node.prototype.start = function(){
     this.setMaxPropagationDelay();
     this.csmaCd = new CSMACD( this.name, buses[NodeBusMap[this.nodeId]], this.maxPropagationDelay, this.onPacketAttempt, this.onPacketSent, this.onBusFree, this);
     this.csmaCd = sim.addEntity(this.csmaCd);
-    this.setTimer(0).done(this.csmaCd.attemptToTransmit,this.csmaCd).setData(this.packets[this.currentPacket])
+    this.csmaCd.attemptToTransmit.call(this.csmaCd, this.packets[this.currentPacket]);
 }
 
 Node.prototype.onPacketSent = function(){
@@ -48,7 +48,7 @@ Node.prototype.onPacketSent = function(){
 Node.prototype.onBusFree = function(){
         
         // Transmit next packet
-        this.setTimer(0).done(this.csmaCd.attemptToTransmit,this.csmaCd).setData(this.packets[this.currentPacket]);
+        this.csmaCd.attemptToTransmit.call(this.csmaCd, this.packets[this.currentPacket]);
 }
 
 
@@ -58,4 +58,6 @@ Node.prototype.onPacketAttempt = function(packet){
         // Update the transmitted time 
 }
 
-
+Node.prototype.onMessage = function(sender, message){
+        this.send(message, 0, this.csmaCd);
+}

@@ -9,11 +9,11 @@ SETTINGS.TransmissionRate = 100 // In Mbps
 SETTINGS.MeanInterPacket = 2; // Number of packets
 SETTINGS.SimTime = 500; // In milli seconds
 SETTINGS.InterNodeDistance = 2000; // In meters
-SETTINGS.RouterProcessingTime = 5; // In Milliseconds
+SETTINGS.RouterProcessingTime = 1; // In Milliseconds
 
 // Not Configurable by user
 SETTINGS.InfinitesimalDelay = 0.000001;
-SETTINGS.PropagationSpeed = 2*Math.pow(10,5);
+SETTINGS.PropagationSpeed = 2*Math.pow(10,5); // In meters/millisec
 SETTINGS.TransmissionTime = ((SETTINGS.PacketSize*8)/(SETTINGS.TransmissionRate*Math.pow(10,6)))*SETTINGS.ConvertToMilliSec; // In Milliseconds
 SETTINGS.ConvertToSec = Math.pow(10,-3);
 SETTINGS.ConvertToMilliSec = Math.pow(10,3);

@@ -18,8 +18,11 @@ function CSMACD( name, bus, maxPropagationDelay, packetAttemptCallback, packetSe
 	}
 
 	// Attempt to transmit "packet"
-	this.attemptToTransmit = function(){
-    	packet = this.callbackData;
+	this.attemptToTransmit = function(iPacket){
+    	packet = iPacket;
+        if(!packet)
+            packet = this.callbackData;
+
 	    if(!isBusBusy())
 	    {
 	        var now = this.sim.time();
@@ -37,6 +40,8 @@ function CSMACD( name, bus, maxPropagationDelay, packetAttemptCallback, packetSe
 	        {
 	            transmitting = false;
 	            sim.log("Node " + name + " : Attempting. Attempt after " + (packet.nextAttemptTime - now));
+                if(typeof nextAttemptReq !== 'undefined')
+                    nextAttemptReq.cancel();
 	            nextAttemptReq = this.setTimer(packet.nextAttemptTime - now).done(this.attemptToTransmit).setData(packet);
 	        }
 	    }
@@ -49,6 +54,7 @@ function CSMACD( name, bus, maxPropagationDelay, packetAttemptCallback, packetSe
 		// Call user's on packet sent successfully
 		transmitting = false;
         bus.stopTransmitting(packet);
+        sim.log(name + " : Packet sent successfully");
         packetSentCallback.call(context);;
         
 	}
@@ -101,8 +107,10 @@ function CSMACD( name, bus, maxPropagationDelay, packetAttemptCallback, packetSe
         // A node has stopped transmitting
         recordNodeTransmissionStop(message.src);
 
+        var now = this.sim.time();
+
         // If the bus is free and we have not scheduled a message for transmission, then inform user that the bus is available for transmission.
-       if(!isBusBusy() && nextAttemptReq.deliverAt < this.sim.time())  
+       if(!isBusBusy() && (typeof packet === 'undefined' || packet.nextAttemptTime < now))  
         {  
         	// inform user that the bus is available 
         	busFreeCallback.call(context);

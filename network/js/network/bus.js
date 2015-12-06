@@ -1,3 +1,4 @@
+
 function Bus(name, nodeIds, routerIds){
 
     this.name = name;
@@ -17,20 +18,34 @@ function Bus(name, nodeIds, routerIds){
         for(var i = 0; i < numNodes; i++)
         {
             var nodeId = nodeIds[i];
-            distance = Math.abs(srcNode.position - nodes[nodeId].position);
-            propagationTime = distance / SETTINGS.PropagationSpeed;
-            this.send( {packet:packet, status:'stopTrans', src: src}, propagationTime, nodes[nodeId].csmaCd);
+            if(srcNode == nodeId)
+            {
+                propagationTime = 0;
+            }
+            else
+            {
+                distance = SETTINGS.InterNodeDistance;
+                propagationTime = distance / SETTINGS.PropagationSpeed;
+            }
+            this.send( {packet:packet, status:'stopTrans', src: src}, propagationTime, nodes[nodeId]);
         }
 
         // Inform routers
         var numRouters = routerIds.length;
         var distance, propagationTime;
-        for(i = 0; i < numNodes; i++)
+        for(i = 0; i < numRouters; i++)
         {
             var routerId = routerIds[i];
             var router = routers[routerId];
-            distance = 2010;
-            propagationTime = distance / SETTINGS.PropagationSpeed;
+            if(packet.srcRouterId == routerId)
+            {
+                propagationTime = 0;
+            }
+            else
+            {
+                distance = SETTINGS.InterNodeDistance;
+                propagationTime = distance / SETTINGS.PropagationSpeed;
+            }
             this.send( {packet:packet, status:'stopTrans', src: src}, propagationTime, router);
         }
     }
@@ -46,9 +61,29 @@ function Bus(name, nodeIds, routerIds){
         for(var i = 0; i < numNodes; i++)
         {
             var nodeId = nodeIds[i];
-            distance = Math.abs(srcNode.position - nodes[nodeId].position);
+            distance = SETTINGS.InterNodeDistance;
             propagationTime = distance / SETTINGS.PropagationSpeed;
-            this.send( {packet:packet, status:'startTrans', src:src}, propagationTime, nodes[nodeId].csmaCd);
+            this.send( {packet:packet, status:'startTrans', src:src}, propagationTime, nodes[nodeId]);
+        }
+
+        // Inform routers
+        var numRouters = routerIds.length;
+        var distance, propagationTime;
+        for(i = 0; i < numRouters; i++)
+        {
+            var routerId = routerIds[i];
+            var router = routers[routerId];
+            if(packet.srcRouterId == routerId)
+            {
+                propagationTime = 0;
+            }
+            else
+            {
+
+                distance = SETTINGS.InterNodeDistance;
+                propagationTime = distance / SETTINGS.PropagationSpeed;
+            }
+            this.send( {packet:packet, status:'startTrans', src: src}, propagationTime, router);
         }    
     }
 } 
