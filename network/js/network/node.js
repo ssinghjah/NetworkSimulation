@@ -9,19 +9,6 @@ function Node(id, name, position){
 
  this.setMaxPropagationDelay = function(){
         var maxDistance = SETTINGS.InterNodeDistance;
-        var currentDistance = 0;
-        var numNodes = nodes.length;
-        for(var i = 0; i < numNodes; i++)
-        {
-            if(i !== this.nodeId)
-            {
-                currentDistance = Math.abs(this.position - nodes[i].position);
-                if(currentDistance > maxDistance)
-                {
-                    maxDistance = currentDistance;
-                }   
-            }
-        }
         this.maxPropagationDelay = maxDistance / SETTINGS.PropagationSpeed;
     }
 }                  

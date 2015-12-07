@@ -100,7 +100,11 @@ function Router( id, name, position, ignoreDest){
 	}
 
 	var onPacketAttempt = function(){
-
+		
+		if(busQueue.length < 1 )
+			return;
+		
+		busQueue[0].rxTime = this.sim.time(); 
 	}
 
 	var onPacketSent = function(){
@@ -111,6 +115,7 @@ function Router( id, name, position, ignoreDest){
 		// Remove and update the transmitted packet
 		busQueue[0].delivered = true;
 		this.packetsDelivered++;
+		busQueue[0].rxTime += SETTINGS.InterNodeDistance / SETTINGS.PropagationSpeed + SETTINGS.TransmissionTime;
 		// Update the rx time of the packet here
 
 		sim.log(name + " : Packet Delivered from " + busQueue[0].src + " to " + busQueue[0].dest)

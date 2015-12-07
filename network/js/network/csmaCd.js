@@ -28,7 +28,7 @@ function CSMACD( name, bus, maxPropagationDelay, packetAttemptCallback, packetSe
 	        var now = this.sim.time();
 	        if(packet.nextAttemptTime <= now)
 	        {
-	            sim.log("Node " + name + " : Transmitting Packet");
+	            sim.log(name + " : Transmitting Packet");
 	            transmitting = true;
 	            // Let node update txTime
 	            packetAttemptCallback.call(context, packet);          
@@ -39,14 +39,14 @@ function CSMACD( name, bus, maxPropagationDelay, packetAttemptCallback, packetSe
 	        else 
 	        {
 	            transmitting = false;
-	            sim.log("Node " + name + " : Attempting. Attempt after " + (packet.nextAttemptTime - now));
+	            sim.log(name + " : Attempting. Attempt after " + (packet.nextAttemptTime - now));
                 if(typeof nextAttemptReq !== 'undefined')
                     nextAttemptReq.cancel();
 	            nextAttemptReq = this.setTimer(packet.nextAttemptTime - now).done(this.attemptToTransmit).setData(packet);
 	        }
 	    }
 	    else{
-	        sim.log("Node " + name + " : Attempting. Bus Busy ");
+	        sim.log(name + " : Attempting. Bus Busy ");
 	    }
 	}
 
