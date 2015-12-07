@@ -97,13 +97,31 @@ function Router( id, name, position, ignoreDest){
 	    						  onPacketAttempt, onPacketSent, onBusFree, this);
 	    this.csmaCd = sim.addEntity(this.csmaCd);
 
+	    // Subscribe to "LinkUpdated" event and update forwarding table using dijikstra's algorithm.
+	    this.onLinkUpdated();
+	    
+	}
+
+
+	this.onLinkUpdated = function(){
+		
+	    this.waitEvent(linkUpdated).done( function()
+	    {
+	    	updateForwardingTable();
+	    	this.setTimer(0).done(this.onLinkUpdated);
+	    });
+	}
+
+	var updateForwardingTable = function(){
+		sim.log(name + " : Link Updated");
+	    forwardingTable = new DijikstrasAlgo().run(routerId, Topology);
 	}
 
 	var onPacketAttempt = function(){
 		
 		if(busQueue.length < 1 )
 			return;
-		
+
 		busQueue[0].rxTime = this.sim.time(); 
 	}
 

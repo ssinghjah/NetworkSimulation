@@ -3,6 +3,9 @@ var nodes = [];
 var log = [];
 var routers = [];
 var buses = [];
+var linkUpdater;
+var linkUpdated = new Sim.Event("LinkUpated");
+
 
 function Simulate(){
     
@@ -19,6 +22,7 @@ function Simulate(){
     createBuses();
     createNodes();
     createRouters();
+    createLinkUpdater();
     initSim();
     sim.simulate(SETTINGS.SimTime);
         
@@ -26,16 +30,6 @@ function Simulate(){
     displayResults();     
 }
 
-function createBuses(){
-
-    var bus1 = new Bus("bus1", [0,1], [0,1]);
-    bus1 = sim.addEntity(bus1);
-    buses.push(bus1);
-
-    var bus2 = new Bus("bus2", [2,3], [2,3]);
-    bus2 = sim.addEntity(bus2);
-    buses.push(bus2);
-}
 
 
 function clearResults(){
@@ -66,6 +60,22 @@ function clearRouters(){
     routers = [];
 }
 
+function createLinkUpdater(){
+    linkUpdater = new LinkCostUpdater();
+    linkUpdater = sim.addEntity(linkUpdater);
+}
+
+function createBuses(){
+
+    var bus1 = new Bus("bus1", [0,1], [0,1]);
+    bus1 = sim.addEntity(bus1);
+    buses.push(bus1);
+
+    var bus2 = new Bus("bus2", [2,3], [2,3]);
+    bus2 = sim.addEntity(bus2);
+    buses.push(bus2);
+}
+
 function createNodes(){
 
     var numNodes = SETTINGS.NumberOfNodes;
@@ -93,6 +103,8 @@ function createRouters(){
         routerId++;
     }
 }
+
+
 
 function initSim(){
 

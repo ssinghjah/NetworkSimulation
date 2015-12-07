@@ -19,9 +19,16 @@ function CSMACD( name, bus, maxPropagationDelay, packetAttemptCallback, packetSe
 
 	// Attempt to transmit "packet"
 	this.attemptToTransmit = function(iPacket){
-    	packet = iPacket;
+    	
+        // nasty hack
+        // either the node can call with packet as argument or csmacd can call with packet as callback data
+        // find better solution later
+        packet = iPacket;
         if(!packet)
             packet = this.callbackData;
+
+        if(!packet)
+            return;
 
 	    if(!isBusBusy())
 	    {
