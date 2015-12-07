@@ -25,7 +25,7 @@ createSummary = function(){
           if( j == i)
             continue;
           var destination = nodes[j];
-          var queueDelay = 0, e2eDelay = 0, throughput = 0, collisionsPerPacket = 0, interArrivalTime = 0, numAttempts = 0;
+          var e2eDelay = 0, throughput = 0, collisionsPerPacket = 0, interArrivalTime = 0, numAttempts = 0;
 
           var packetsDeliveredList = $.grep(nodes[i].packets, function(packet){return packet.delivered && packet.dest == j ;});
           var packetsDelivered = packetsDeliveredList.length;
@@ -33,7 +33,7 @@ createSummary = function(){
            // End to End Delay
           if(packetsDeliveredList.length > 0)
           {
-             var e2eDelayList = $.map(packetsDeliveredList, function(packet){return packet.rxTime - packet.birthTime - nodes[i].maxPropagationDelay ;});
+             var e2eDelayList = $.map(packetsDeliveredList, function(packet){return packet.rxTime - packet.birthTime;});
              var e2eDelay = getAverage(e2eDelayList);    
              avgEndToEndDelay += e2eDelay;
              deliveredCount++;

@@ -29,7 +29,7 @@ createPerNodeResults = function(){
     {
         var packetsDelivered = $.grep(nodes[i].packets, function( packet ) {return packet.delivered;});
         if(packetsDelivered.length > 0){
-            values = $.map(packetsDelivered, function(packet){return packet.txTime - packet.birthTime;});
+            values = $.map(packetsDelivered, function(packet){return packet.nextAttemptTime - packet.birthTime;});
             label = "Node " + nodes[i].name + ": Queue Delay (ms)";
             createLinePlot(values, label, "queueDelay linePlot results");
             createHistogram(values, label + " Histogram", "queueDelay results", 20);
