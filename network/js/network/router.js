@@ -1,7 +1,7 @@
 function Router( id, name, position, ignoreDest){
 
 	var routerId = id;
-	var name = name;
+	this.name = name;
 	var backhaulQueue = [];
 	var busQueue = [];
 	var ignoreList = RouterIgnoreList[routerId];
@@ -10,6 +10,7 @@ function Router( id, name, position, ignoreDest){
 	var busySendingToBackHaul = false;
 	this.packetsDelivered = 0;
 	var busPacket = null;
+	this.busyTime = 0;
 
 	this.onMessage = function(sender,message)
 	{
@@ -42,7 +43,7 @@ function Router( id, name, position, ignoreDest){
 		var destRouter = NodeRouterMap[dest];
 		if(destRouter === routerId )
 		{
-			sim.log(name + " Packet received : From Node" + nodes[message.packet.src].name + ", To: Node " + (message.packet.dest + 1));
+			sim.log(this.name + " Packet received : From Node" + nodes[message.packet.src].name + ", To: Node " + (message.packet.dest + 1));
 			busQueue.push(message.packet);
 		}
 
@@ -54,7 +55,7 @@ function Router( id, name, position, ignoreDest){
 
 	     	if(forwardingEntry.length === 1)
 	     	{
-	     		sim.log(name + " Packet received : From Node" + nodes[message.packet.src].name + ", To: Node " +  (message.packet.dest + 1));
+	     		sim.log(this.name + " Packet received : From Node" + nodes[message.packet.src].name + ", To: Node " +  (message.packet.dest + 1));
 	     		// Add packet and next hop to queue.
 	     		backhaulQueue.push({ packet: message.packet, nextHop: forwardingEntry[0].nextHop});
 		     	// If router is not busy, forward
@@ -75,7 +76,9 @@ function Router( id, name, position, ignoreDest){
 
 			this.setTimer(SETTINGS.RouterProcessingTime).done(function(){
 				
-				sim.log(name + ": Forwarding packet from " + queueEntry.packet.src + " to "  + queueEntry.packet.dest);
+				this.busyTime += SETTINGS.RouterProcessingTime;
+
+				sim.log(this.name + ": Forwarding packet from " + queueEntry.packet.src + " to "  + queueEntry.packet.dest);
 
 				queueEntry.packet.rxTime += SETTINGS.RouterProcessingTime;
 
@@ -93,7 +96,7 @@ function Router( id, name, position, ignoreDest){
 	this.start = function(){
 
 		forwardingTable = new DijikstrasAlgo().run(routerId, Topology);
-	    this.csmaCd = new CSMACD( name, buses[RouterBusMap[routerId]], SETTINGS.InterNodeDistance / SETTINGS.PropagationSpeed, 
+	    this.csmaCd = new CSMACD( this.name, buses[RouterBusMap[routerId]], SETTINGS.InterNodeDistance / SETTINGS.PropagationSpeed, 
 	    						  onPacketAttempt, onPacketSent, onBusFree, this);
 	    this.csmaCd = sim.addEntity(this.csmaCd);
 
@@ -113,7 +116,7 @@ function Router( id, name, position, ignoreDest){
 	}
 
 	var updateForwardingTable = function(){
-		sim.log(name + " : Link Updated");
+		sim.log(this.name + " : Link Updated");
 	    forwardingTable = new DijikstrasAlgo().run(routerId, Topology);
 	}
 
@@ -136,7 +139,7 @@ function Router( id, name, position, ignoreDest){
 		busQueue[0].rxTime += SETTINGS.InterNodeDistance / SETTINGS.PropagationSpeed + SETTINGS.TransmissionTime;
 		// Update the rx time of the packet here
 
-		sim.log(name + " : Packet Delivered from " + busQueue[0].src + " to " + busQueue[0].dest)
+		sim.log(this.name + " : Packet Delivered from " + busQueue[0].src + " to " + busQueue[0].dest)
 		busQueue.shift();
 	}
 
@@ -147,6 +150,5 @@ function Router( id, name, position, ignoreDest){
 			busQueue[0].srcRouterId = routerId;
 			this.csmaCd.attemptToTransmit.call(this.csmaCd, busQueue[0]);
 	}
-
 }
 

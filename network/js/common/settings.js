@@ -9,7 +9,7 @@ SETTINGS.TransmissionRate = 100 // In Mbps
 SETTINGS.MeanInterPacket = 2; // Number of packets
 SETTINGS.SimTime = 500; // In milli seconds
 SETTINGS.InterNodeDistance = 2000; // In meters
-SETTINGS.RouterProcessingTime = 0; // In Milliseconds
+SETTINGS.RouterProcessingTime = 0.1; // In Milliseconds
 
 // Not Configurable by user
 SETTINGS.InfinitesimalDelay = 0.001;
