@@ -11,40 +11,75 @@ function Router( id, name, position, ignoreDest){
 	this.packetsDelivered = 0;
 	var busPacket = null;
 	this.busyTime = 0;
+	var inputQueue = [];
 
 	this.onMessage = function(sender,message)
 	{
 
+		forwardMessageToCSMACD.call(this, message);
+
+		var isValid = validatePacket(message);
+		if(!isValid)
+			return
+		
+		inputQueue.push(message.packet);
+		processPacket.call(this, message);
+	
+	}
+
+
+	var validatePacket = function(message)
+	{
+
+		var isValid = true;
+
 		// If packet is from an end node
 		if(message.status !== "fromRouter")
 		{
-
-			// Forward the message to csma cd algo
-			this.send(message, 0, this.csmaCd);
 			
 			// Return if the destination is in the ignore list
 			if( $.inArray(message.packet.dest, ignoreList) !== -1 )
-				return;
+				isValid = false;
 
 			// Return if the router is not the default gateway of the source node 
 			if( routerId !== NodeRouterMap[message.packet.src])
-				return;
-		}
+				isValid = false;
 
+		}
 
 		// Entire packet not transmitted
 		if( message.packet.rxTime <= 0)
-			return
+			isValid = false
+
+	    return isValid;
+
+	}
+
+	var forwardMessageToCSMACD = function(message){
+		
+		// If packet is from an end node, forward the message to csma cd algo
+		if(message.status !== "fromRouter")
+		{
+			this.send(message, 0, this.csmaCd);
+		}
+	}
+
+	var processPacket = function(message){
 
 		var dest = message.packet.dest;
-		
-		
 		// Has the destination been reached ?
 		var destRouter = NodeRouterMap[dest];
 		if(destRouter === routerId )
 		{
 			sim.log(this.name + " Packet received : From Node" + nodes[message.packet.src].name + ", To: Node " + (message.packet.dest + 1));
-			busQueue.push(message.packet);
+			
+			this.setTimer(SETTINGS.RouterProcessingTime).done(
+				
+				function(){
+					this.busyTime += SETTINGS.RouterProcessingTime;
+					busQueue.push(message.packet);
+				});
+			
 		}
 
 		else if( message.status === "stopTrans" || message.status === "fromRouter" ){
@@ -60,13 +95,14 @@ function Router( id, name, position, ignoreDest){
 	     		backhaulQueue.push({ packet: message.packet, nextHop: forwardingEntry[0].nextHop});
 		     	// If router is not busy, forward
 		     	if(!busySendingToBackHaul){
-		     		this.forwardOnBackhaul();
+		     		forwardOnBackhaul.call(this);
 		     	}
 	     	}
-	    }
+	    }	
 	}
 
-	this.forwardOnBackhaul = function(){
+
+	var forwardOnBackhaul = function(){
 
 			if(backhaulQueue.length < 1 )
 				return;
@@ -89,7 +125,7 @@ function Router( id, name, position, ignoreDest){
 				busySendingToBackHaul = false;
 
 				// check queue again
-				this.forwardOnBackhaul();
+				forwardOnBackhaul.call(this);
 			})			
 	}
 
