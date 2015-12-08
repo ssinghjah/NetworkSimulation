@@ -30,28 +30,27 @@ function Router( id, name, position, ignoreDest){
 
 	var validatePacket = function(message)
 	{
-
-		var isValid = true;
+		if(message.status == "startTrans")
+			return false;
 
 		// If packet is from an end node
 		if(message.status !== "fromRouter")
-		{
-			
+		{			
 			// Return if the destination is in the ignore list
 			if( $.inArray(message.packet.dest, ignoreList) !== -1 )
-				isValid = false;
+				return false;
 
 			// Return if the router is not the default gateway of the source node 
 			if( routerId !== NodeRouterMap[message.packet.src])
-				isValid = false;
+				return false;
 
 		}
 
 		// Entire packet not transmitted
 		if( message.packet.rxTime <= 0)
-			isValid = false
+			return false
 
-	    return isValid;
+	    return true;
 
 	}
 
@@ -66,10 +65,11 @@ function Router( id, name, position, ignoreDest){
 
 	var processPacket = function(message){
 
+		
 		var dest = message.packet.dest;
 		// Has the destination been reached ?
 		var destRouter = NodeRouterMap[dest];
-		if(destRouter === routerId )
+		if( destRouter === routerId )
 		{
 			sim.log(this.name + " Packet received : From Node" + nodes[message.packet.src].name + ", To: Node " + (message.packet.dest + 1));
 			
@@ -82,7 +82,8 @@ function Router( id, name, position, ignoreDest){
 			
 		}
 
-		else if( message.status === "stopTrans" || message.status === "fromRouter" ){
+		else 
+		{
 
 			// If Forwarding table has entry for the destination, add the packet to queue
 			var forwardingEntry = $.grep(forwardingTable.entries, function(entry){
