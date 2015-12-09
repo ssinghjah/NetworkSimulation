@@ -110,19 +110,22 @@ createRouterSummary = function(){
       var name = router.name;
       var utilization = (router.busyTime/SETTINGS.SimTime)*100;
       utilization = utilization.toFixed(2) + " %";
+      var inputQueueDelay = router.inputQueueDelay / router.packetsProcessed;
+      inputQueueDelay = inputQueueDelay.toFixed(3) + " msec";
       var packetsDelivered = router.packetsDelivered;
-         routerSummary.push(
-           {
-              "Name": routers[i].name,
-              "Utilization (Only Processing)":utilization, 
-              "Throughput": calculateThroughput(packetsDelivered)
-          }
-        ); 
+      routerSummary.push(
+       {
+          "Name": routers[i].name,
+          "Utilization (Only Processing)":utilization,
+          "Input Queue Delay": inputQueueDelay,
+          "Throughput": calculateThroughput(packetsDelivered)
+       }
+     ); 
         
     }
 
     var heading = "Router Summary";
-    columns = ["Name", "Utilization (Only Processing)", "Throughput"];
+    columns = ["Name", "Utilization (Only Processing)", "Input Queue Delay", "Throughput"];
     createTable("summary", heading, columns, routerSummary);          
 }
 

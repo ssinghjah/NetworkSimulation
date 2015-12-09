@@ -8,5 +8,6 @@ function Packet( src, dest, birthTime, interArrivalTime){
     this.rxTime = 0;
     this.nextAttemptTime = birthTime;
     this.interArrivalTime = interArrivalTime;
-    this.routerQueueDelays = [];
+    this.routerInputQueueDelays = [];
+    this.routerOutputQueueDelays =[];
 } 

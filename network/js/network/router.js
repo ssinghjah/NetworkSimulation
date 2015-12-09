@@ -2,15 +2,14 @@ function Router( id, name, position, ignoreDest){
 
 	var routerId = id;
 	this.name = name;
-	var backhaulQueue = [];
 	var busQueue = [];
 	var ignoreList = RouterIgnoreList[routerId];
-	var currentlyReceiving;
 	var forwardingTable;
-	var busySendingToBackHaul = false;
 	this.packetsDelivered = 0;
-	var busPacket = null;
+	this.packetsProcessed = 0;
+	this.inputQueueDelay = 0;
 	this.busyTime = 0;
+	var busPacket = null;
 	var inputQueue = [];
 	var busy = false;
 
@@ -18,12 +17,12 @@ function Router( id, name, position, ignoreDest){
 	{
 
 		forwardMessageToCSMACD.call(this, message);
-
 		var isValid = validatePacket(message);
 		if(!isValid)
 			return
 		
 		inputQueue.push(message.packet);
+		message.packet.routerInputQueueDelays.push({id: routerId, delay:this.sim.time()});
 		if(!busy)
 			processPacket.call(this, message);
 	
@@ -73,6 +72,16 @@ function Router( id, name, position, ignoreDest){
 		var packet = inputQueue.shift();
 		var dest = packet.dest;
 		
+		// update input queue delay
+		var queueDelay = $.grep(packet.routerInputQueueDelays, function(value){ return value.id == routerId});
+		if(queueDelay.length == 1)
+		{
+			queueDelay[0].delay = this.sim.time() - queueDelay[0].delay;
+			this.inputQueueDelay += queueDelay[0].delay;
+			this.packetsProcessed++;
+		}
+						 	
+
 		// If the gateway router has been reached, push the packet to the busQueue so that it can be processed by csma cd 
 		var destRouter = NodeRouterMap[dest];
 		if( destRouter === routerId )
