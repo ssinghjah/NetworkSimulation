@@ -129,7 +129,7 @@ function Router( id, name, position, ignoreDest){
 		
 	    this.waitEvent(linkUpdated).done( function()
 	    {
-	    	updateForwardingTable();
+	    	updateForwardingTable.call(this);
 	    	this.setTimer(0).done(this.onLinkUpdated);
 	    });
 	}

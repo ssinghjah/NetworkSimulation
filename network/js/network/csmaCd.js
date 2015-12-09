@@ -109,6 +109,7 @@ function CSMACD( name, bus, maxPropagationDelay, packetAttemptCallback, packetSe
     }
 
     this.onMessage = function(sender, message){
+
         if(message.status === "stopTrans"){
         
         // A node has stopped transmitting
@@ -117,7 +118,7 @@ function CSMACD( name, bus, maxPropagationDelay, packetAttemptCallback, packetSe
         var now = this.sim.time();
 
         // If the bus is free and we have not scheduled a message for transmission, then inform user that the bus is available for transmission.
-       if(!isBusBusy() && (typeof packet === 'undefined' || packet.nextAttemptTime < now))  
+        if(!isBusBusy() && (typeof packet === 'undefined' || packet == null || packet.nextAttemptTime < now))  
         {  
         	// inform user that the bus is available 
         	busFreeCallback.call(context);

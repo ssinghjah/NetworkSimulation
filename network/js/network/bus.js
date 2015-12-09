@@ -61,8 +61,13 @@ function Bus(name, nodeIds, routerIds){
         for(var i = 0; i < numNodes; i++)
         {
             var nodeId = nodeIds[i];
+            if( nodeId == src){
+                propagationTime = 0;
+            }
+            else{
             distance = SETTINGS.InterNodeDistance;
             propagationTime = distance / SETTINGS.PropagationSpeed;
+            }
             this.send( {packet:packet, status:'startTrans', src:src}, propagationTime, nodes[nodeId]);
         }
 
