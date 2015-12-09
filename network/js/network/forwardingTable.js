@@ -15,5 +15,5 @@ function ForwardingEntry(){
 	this.dest = -1;
 	this.predecessor = -1;
 	this.totalCost = INFINITY;
-	this.nextNode = -1;
+	this.nextHop = -1;
 } 	

@@ -79,7 +79,6 @@ function Bus(name, nodeIds, routerIds){
             }
             else
             {
-
                 distance = SETTINGS.InterNodeDistance;
                 propagationTime = distance / SETTINGS.PropagationSpeed;
             }

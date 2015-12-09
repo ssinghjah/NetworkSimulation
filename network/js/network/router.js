@@ -12,6 +12,7 @@ function Router( id, name, position, ignoreDest){
 	var busPacket = null;
 	this.busyTime = 0;
 	var inputQueue = [];
+	var busy = false;
 
 	this.onMessage = function(sender,message)
 	{
@@ -23,7 +24,8 @@ function Router( id, name, position, ignoreDest){
 			return
 		
 		inputQueue.push(message.packet);
-		processPacket.call(this, message);
+		if(!busy)
+			processPacket.call(this, message);
 	
 	}
 
@@ -63,72 +65,52 @@ function Router( id, name, position, ignoreDest){
 		}
 	}
 
-	var processPacket = function(message){
+	var processPacket = function(){
 
+		if(inputQueue.length < 1 )
+				return;
+			
+		var packet = inputQueue.shift();
+		var dest = packet.dest;
 		
-		var dest = message.packet.dest;
-		// Has the destination been reached ?
+		// If the gateway router has been reached, push the packet to the busQueue so that it can be processed by csma cd 
 		var destRouter = NodeRouterMap[dest];
 		if( destRouter === routerId )
 		{
-			sim.log(this.name + " Packet received : From Node" + nodes[message.packet.src].name + ", To: Node " + (message.packet.dest + 1));
 			
+		    busy = true;
 			this.setTimer(SETTINGS.RouterProcessingTime).done(
-				
 				function(){
+					sim.log(this.name + ": Forwarding packet using CSMA CD : From Node " + nodes[packet.src].name + ", To: Node " + nodes[packet.dest].name);
 					this.busyTime += SETTINGS.RouterProcessingTime;
-					busQueue.push(message.packet);
+					busQueue.push(packet);
+					busy = false;
+					processPacket.call(this);
 				});
-			
 		}
-
+		// Else forward to the next hop router
 		else 
 		{
-
-			// If Forwarding table has entry for the destination, add the packet to queue
-			var forwardingEntry = $.grep(forwardingTable.entries, function(entry){
-				return destRouter === entry.dest;});
-
+			// If Forwarding table has entry for the destination, then forward the packet
+			var forwardingEntry = $.grep(forwardingTable.entries, function(entry){ return destRouter === entry.dest;});
 	     	if(forwardingEntry.length === 1)
 	     	{
-	     		sim.log(this.name + " Packet received : From Node" + nodes[message.packet.src].name + ", To: Node " +  (message.packet.dest + 1));
-	     		// Add packet and next hop to queue.
-	     		backhaulQueue.push({ packet: message.packet, nextHop: forwardingEntry[0].nextHop});
-		     	// If router is not busy, forward
-		     	if(!busySendingToBackHaul){
-		     		forwardOnBackhaul.call(this);
-		     	}
+	     		busy = true;
+	     		this.setTimer(SETTINGS.RouterProcessingTime).done(
+					function()
+					{
+						sim.log(this.name + ": Forwarding to next hop router " + routers[forwardingEntry[0].nextHop].name + " : From Node " + nodes[packet.src].name + ", To: Node " + nodes[packet.dest].name);
+						this.busyTime += SETTINGS.RouterProcessingTime;
+						packet.rxTime += SETTINGS.RouterProcessingTime;
+						// send to router on the backhaul without csma cd
+						this.send( {packet : packet, status:"fromRouter"}, SETTINGS.InfinitesimalDelay, routers[forwardingEntry[0].nextHop]);
+						busy = false;
+						processPacket.call(this);
+				});
 	     	}
 	    }	
 	}
 
-
-	var forwardOnBackhaul = function(){
-
-			if(backhaulQueue.length < 1 )
-				return;
-			// remove top of queue
-			var queueEntry = backhaulQueue.shift();
-			busySendingToBackHaul = true;
-
-			this.setTimer(SETTINGS.RouterProcessingTime).done(function(){
-				
-				this.busyTime += SETTINGS.RouterProcessingTime;
-
-				sim.log(this.name + ": Forwarding packet from " + queueEntry.packet.src + " to "  + queueEntry.packet.dest);
-
-				queueEntry.packet.rxTime += SETTINGS.RouterProcessingTime;
-
-				// send to router on the backhaul without csma cd
-				this.send( {packet : queueEntry.packet, status:"fromRouter"}, SETTINGS.InfinitesimalDelay, routers[queueEntry.nextHop]);
-				
-				// reset busy status
-				busySendingToBackHaul = false;
-
-				// check queue again
-				forwardOnBackhaul.call(this);
-			})			
-	}
 
 	this.start = function(){
 
