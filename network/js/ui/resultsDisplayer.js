@@ -46,14 +46,19 @@ createPerNodeResults = function(){
         }
     } 
 
-    // Collisions
+    // Collisions per packets from node i to node j
     for(var i=0; i<numNodes; i++)
     {
-       var packetsTransmittedList = $.grep(nodes[i].packets, function(packet){return packet.txTime > 0;});
-       if(packetsTransmittedList.length > 0)
-       {
-            values = $.map(packetsTransmittedList, function(packet){return packet.numCollisions;}); 
-            createPie(values, "Node " + nodes[i].name + ": Collisions Per Packet", "collisions results", "collisionsPie" + i);
+        for(var j=0; j<numNodes; j++)
+        {
+            if(j == i)
+                continue;
+           var packetsTransmittedList = $.grep(nodes[i].packets, function(packet){return (packet.txTime > 0 && packet.dest == j);});
+           if(packetsTransmittedList.length > 0)
+           {
+                values = $.map(packetsTransmittedList, function(packet){return packet.numCollisions;}); 
+                createPie(values, "Node " + nodes[i].name + " to " + nodes[j].name + " : Collisions Per Packet", "collisions results", "collisionsPie" + i + j);
+            }
         }
     }
 }
