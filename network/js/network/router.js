@@ -8,6 +8,7 @@ function Router( id, name, position, ignoreDest){
 	this.packetsDelivered = 0;
 	this.packetsProcessed = 0;
 	this.inputQueueDelay = 0;
+	this.outputQueueDelay = 0;
 	this.busyTime = 0;
 	var busPacket = null;
 	var inputQueue = [];
@@ -64,6 +65,60 @@ function Router( id, name, position, ignoreDest){
 		}
 	}
 
+	var updateInputQueueDelay = function(packet){
+
+		var delay = PacketUtils.UpdateInputQueueDelay(packet, routerId, this.sim.time());	
+		if(delay != -1)
+		{
+			this.inputQueueDelay += delay;
+			this.packetsProcessed++;
+		}
+	}
+
+
+	var updateOutputQueueDelay = function(packet, txTime){
+
+		var delay = PacketUtils.UpdateOutputQueueDelay(packet, routerId, txTime);	
+		if(delay != -1)
+		{
+			this.outputQueueDelay += delay;
+		}
+	}
+
+	var forwardToEndNode = function(packet){
+		busy = true;
+		this.setTimer(SETTINGS.RouterProcessingTime).done(
+			function(){
+				sim.log(this.name + ": Forwarding packet using CSMA CD : From Node " + nodes[packet.src].name + ", To: Node " + nodes[packet.dest].name);
+				this.busyTime += SETTINGS.RouterProcessingTime;
+				packet.routerOutputQueueDelays.push({id: routerId, delay:this.sim.time()});
+				busQueue.push(packet);
+				busy = false;
+				processPacket.call(this);
+			});
+	}
+
+	var forwardToNextHopRouter = function( destRouter, packet){
+
+		// If Forwarding table has entry for the destination, then forward the packet
+		var forwardingEntry = $.grep(forwardingTable.entries, function(entry){ return destRouter === entry.dest;});
+     	if(forwardingEntry.length === 1)
+     	{
+     		busy = true;
+     		this.setTimer(SETTINGS.RouterProcessingTime).done(
+				function()
+				{
+					sim.log(this.name + ": Forwarding to next hop router " + routers[forwardingEntry[0].nextHop].name + " : From Node " + nodes[packet.src].name + ", To: Node " + nodes[packet.dest].name);
+					this.busyTime += SETTINGS.RouterProcessingTime;
+					packet.rxTime += SETTINGS.RouterProcessingTime;
+					// send to router on the backhaul without csma cd
+					this.send( {packet : packet, status:"fromRouter"}, SETTINGS.InfinitesimalDelay, routers[forwardingEntry[0].nextHop]);
+					busy = false;
+					processPacket.call(this);
+			});
+     	}
+	}
+
 	var processPacket = function(){
 
 		if(inputQueue.length < 1 )
@@ -71,52 +126,18 @@ function Router( id, name, position, ignoreDest){
 			
 		var packet = inputQueue.shift();
 		var dest = packet.dest;
-		
-		// update input queue delay
-		var queueDelay = $.grep(packet.routerInputQueueDelays, function(value){ return value.id == routerId});
-		if(queueDelay.length == 1)
-		{
-			queueDelay[0].delay = this.sim.time() - queueDelay[0].delay;
-			this.inputQueueDelay += queueDelay[0].delay;
-			this.packetsProcessed++;
-		}
+		updateInputQueueDelay.call(this, packet, routerId);
 						 	
-
 		// If the gateway router has been reached, push the packet to the busQueue so that it can be processed by csma cd 
 		var destRouter = NodeRouterMap[dest];
 		if( destRouter === routerId )
 		{
-			
-		    busy = true;
-			this.setTimer(SETTINGS.RouterProcessingTime).done(
-				function(){
-					sim.log(this.name + ": Forwarding packet using CSMA CD : From Node " + nodes[packet.src].name + ", To: Node " + nodes[packet.dest].name);
-					this.busyTime += SETTINGS.RouterProcessingTime;
-					busQueue.push(packet);
-					busy = false;
-					processPacket.call(this);
-				});
+		   forwardToEndNode.call(this,packet);
 		}
 		// Else forward to the next hop router
 		else 
 		{
-			// If Forwarding table has entry for the destination, then forward the packet
-			var forwardingEntry = $.grep(forwardingTable.entries, function(entry){ return destRouter === entry.dest;});
-	     	if(forwardingEntry.length === 1)
-	     	{
-	     		busy = true;
-	     		this.setTimer(SETTINGS.RouterProcessingTime).done(
-					function()
-					{
-						sim.log(this.name + ": Forwarding to next hop router " + routers[forwardingEntry[0].nextHop].name + " : From Node " + nodes[packet.src].name + ", To: Node " + nodes[packet.dest].name);
-						this.busyTime += SETTINGS.RouterProcessingTime;
-						packet.rxTime += SETTINGS.RouterProcessingTime;
-						// send to router on the backhaul without csma cd
-						this.send( {packet : packet, status:"fromRouter"}, SETTINGS.InfinitesimalDelay, routers[forwardingEntry[0].nextHop]);
-						busy = false;
-						processPacket.call(this);
-				});
-	     	}
+			forwardToNextHopRouter.call(this, destRouter, packet);
 	    }	
 	}
 
@@ -164,9 +185,13 @@ function Router( id, name, position, ignoreDest){
 		// Remove and update the transmitted packet
 		busQueue[0].delivered = true;
 		this.packetsDelivered++;
-		busQueue[0].rxTime += SETTINGS.InterNodeDistance / SETTINGS.PropagationSpeed + SETTINGS.TransmissionTime;
-		// Update the rx time of the packet here
 
+		// Rx time contains txTime from router. Calculate Output Queue Delay before updating Rx time.
+		updateOutputQueueDelay.call(this, busQueue[0], busQueue[0].rxTime);
+		
+		// Update Rx time
+		busQueue[0].rxTime += SETTINGS.InterNodeDistance / SETTINGS.PropagationSpeed + SETTINGS.TransmissionTime;
+		
 		sim.log(this.name + " : Packet Delivered from " + busQueue[0].src + " to " + busQueue[0].dest)
 		busQueue.shift();
 	}

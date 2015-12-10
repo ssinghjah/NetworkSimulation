@@ -110,14 +110,21 @@ createRouterSummary = function(){
       var name = router.name;
       var utilization = (router.busyTime/SETTINGS.SimTime)*100;
       utilization = utilization.toFixed(2) + " %";
+      
       var inputQueueDelay = router.inputQueueDelay / router.packetsProcessed;
       inputQueueDelay = inputQueueDelay.toFixed(3) + " msec";
+      
       var packetsDelivered = router.packetsDelivered;
+      
+      var outputQueueDelay = router.outputQueueDelay / packetsDelivered;
+      outputQueueDelay = outputQueueDelay.toFixed(3) + " msec";
+      
       routerSummary.push(
        {
           "Name": routers[i].name,
-          "Utilization (Only Processing)":utilization,
+          "Utilization":utilization,
           "Input Queue Delay": inputQueueDelay,
+          "Output Queue Delay":outputQueueDelay,
           "Throughput": calculateThroughput(packetsDelivered)
        }
      ); 
@@ -125,7 +132,7 @@ createRouterSummary = function(){
     }
 
     var heading = "Router Summary";
-    columns = ["Name", "Utilization (Only Processing)", "Input Queue Delay", "Throughput"];
+    columns = ["Name", "Utilization", "Input Queue Delay","Output Queue Delay", "Throughput"];
     createTable("summary", heading, columns, routerSummary);          
 }
 
