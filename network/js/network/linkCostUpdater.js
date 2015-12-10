@@ -1,7 +1,7 @@
 function LinkCostUpdater(){
 
 	this.start = function(){
-		updateAfterInterval.call(this);
+		update.call(this);
 	}
 
 	var updateAfterInterval = function()
