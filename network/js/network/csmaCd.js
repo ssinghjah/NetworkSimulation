@@ -8,6 +8,7 @@ function CSMACD( name, bus, maxPropagationDelay, packetAttemptCallback, packetSe
 	var nextAttemptReq;
 	var maxPropagationDelay = maxPropagationDelay;
 	var nodesTransmittingOnTheBus = [];
+    var routersTransmittingOnTheBus = [];
 	var packet;
 	var packetAttemptCallback = packetAttemptCallback;
     var packetSentCallback = packetSentCallback;
@@ -79,8 +80,23 @@ function CSMACD( name, bus, maxPropagationDelay, packetAttemptCallback, packetSe
         });
     }
 
+
+
+    var recordRouterTransmissionStart = function(id){
+        if($.inArray(id, routersTransmittingOnTheBus) === -1){
+            routersTransmittingOnTheBus.push(id);
+        }
+    }
+
+    var recordRouterTransmissionStop = function (id) {
+        routersTransmittingOnTheBus = $.grep(routersTransmittingOnTheBus, function(value) {
+            return value != id;
+        });
+    }
+
+
     var isBusBusy = function(){
-        return nodesTransmittingOnTheBus.length !== 0;
+        return nodesTransmittingOnTheBus.length !== 0 || routersTransmittingOnTheBus.length !== 0;
     }
 
     var backoffDelay = function(numCollisions){
@@ -114,6 +130,8 @@ function CSMACD( name, bus, maxPropagationDelay, packetAttemptCallback, packetSe
         
         // A node has stopped transmitting
         recordNodeTransmissionStop(message.src);
+        if(message.packet.srcRouterId !== -1)
+            recordRouterTransmissionStop(message.packet.srcRouterId);
 
         var now = this.sim.time();
 
@@ -128,7 +146,10 @@ function CSMACD( name, bus, maxPropagationDelay, packetAttemptCallback, packetSe
     {
         // The bus is busy and the node has received a packet
         recordNodeTransmissionStart(message.src);
-        
+        if(message.packet.srcRouterId !== -1)
+            recordRouterTransmissionStart(message.packet.srcRouterId);
+
+
         if(transmitting && message.src != packet.src)
         {
             // A packet is received while the node is transmitting.

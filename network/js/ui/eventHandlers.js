@@ -20,6 +20,7 @@ var onChangeTopologyCheckbox = function(checkbox){
 	}
 	else{
 		ChangeTopology = false;
+		Topology = DefaultTopology;
 	}
 }
 

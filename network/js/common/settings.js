@@ -33,6 +33,7 @@ SETTINGS.UpdateUI = function(){
 	document.getElementById('routerProcTime').value = SETTINGS.RouterProcessingTime; // In milliseconds 
 	document.getElementById('linkCostUpdateInterval').value = SETTINGS.LinkCostUpdateInterval; // In milliseconds 
 	document.getElementById('numPathTrace').value = SETTINGS.NumPathTrace; 
+	document.getElementById('frameSlot').value = SETTINGS.FrameSlot; 
 
 }
 
@@ -47,6 +48,7 @@ SETTINGS.UpdatefromUI = function(){
 	SETTINGS.RouterProcessingTime = parseFloat(document.getElementById('routerProcTime').value); // In milliseconds 
 	SETTINGS.LinkCostUpdateInterval = parseFloat(document.getElementById('linkCostUpdateInterval').value); // In milliseconds 
 	SETTINGS.NumPathTrace = parseFloat(document.getElementById('numPathTrace').value);
+	SETTINGS.FrameSlot = parseFloat(document.getElementById('frameSlot').value);
 }
 
 $(document).ready(function(){

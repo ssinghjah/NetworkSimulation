@@ -18,6 +18,8 @@ function Simulate(){
     clearBuses();
 
     // simulate
+    if(ChangeTopology)
+        UpdateTopologyfromUI();
     SETTINGS.UpdatefromUI();
     createBuses();
     createNodes();

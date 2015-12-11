@@ -114,11 +114,10 @@ createRouterSummary = function(){
       var utilization = (router.busyTime/SETTINGS.SimTime)*100;
       utilization = utilization.toFixed(2) + " %";
       
-      var inputQueueDelay = router.packetsProcessed == 0 ? 0 : router.inputQueueDelay / router.packetsProcessed;
+      var inputQueueDelay = getAverage(router.inputQueueDelay);
       inputQueueDelay = inputQueueDelay.toFixed(3) + " msec";
       
-      var packetsDelivered = router.packetsDelivered;
-      var outputQueueDelay = packetsDelivered == 0 ? 0 : router.outputQueueDelay / packetsDelivered;
+      var outputQueueDelay = getAverage(router.outputQueueDelay);
       outputQueueDelay = outputQueueDelay.toFixed(3) + " msec";
       
       routerSummary.push(
@@ -127,7 +126,7 @@ createRouterSummary = function(){
           "Utilization":utilization,
           "Input Queue Delay": inputQueueDelay,
           "Output Queue Delay":outputQueueDelay,
-          "Throughput": calculateThroughput(packetsDelivered)
+          "Throughput": calculateThroughput(router.packetsDelivered + router.packetsProcessed)
        }
      ); 
         

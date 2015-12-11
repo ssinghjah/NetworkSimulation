@@ -81,11 +81,18 @@ createPathSummary = function()
 
           var path = $.map(packetsDeliveredGlobal[i][j].slice(1,SETTINGS.NumPathTrace), 
             function(packet){ 
-            if(packet.path.length == 2) 
+            if(packet.path.length > 1) 
             {
+                var path = "";
+                for( var l = 0; l < packet.path.length; l++)
+                {
+                    path += routers[packet.path[l]].name + "-";
+                }
+                path = path.substring(0, path.length - 1);
+
                 var pathDetails = 
                   {
-                      "Path":routers[packet.path[0]].name + "-" + routers[packet.path[1]].name,
+                      "Path": path,
                       "Time Instant":packet.linkState.time.toFixed(1) + " msec"
                   };
                 var connectedRouters = NodeRouterMap[i];
