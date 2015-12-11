@@ -27,25 +27,15 @@ createPerNodeResults = function(){
         createHistogram(values, label + " Histogram", "interPacket results", 20);
     }   
 
-     // Queue Delays
-    for(var i=0; i<numNodes; i++)
-    {
-        var packetsDelivered = $.grep(nodes[i].packets, function( packet ) {return packet.delivered;});
-        if(packetsDelivered.length > 0){
-            values = $.map(packetsDelivered, function(packet){return packet.nextAttemptTime - packet.birthTime;});
-            label = "Node " + nodes[i].name + ": Queue Delay (ms)";
-            createLinePlot(values, label, "queueDelay linePlot results");
-            createHistogram(values, label + " Histogram", "queueDelay results", 20);
-        }
-    }   
-
     // End to End Delays
     for(var i=0; i<numNodes; i++)
     {
         var packetsDelivered = $.grep(nodes[i].packets, function( packet ) {return packet.rxTime > 0;});
         if(packetsDelivered.length > 0){
             values = $.map(packetsDelivered, function(packet){return packet.rxTime - packet.birthTime;});
-            createHistogram(values, "Node " + nodes[i].name + ": End to End Delay (ms)", "e2eDelay results", 20);
+            label = "Node " + nodes[i].name + ": End to End Delay (ms)";
+            createLinePlot(values, label, "e2eDelay linePlot results");
+            createHistogram(values, label + " Histogram", "e2eDelay results", 20);
         }
     } 
 
