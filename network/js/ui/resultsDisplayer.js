@@ -64,7 +64,62 @@ createPerNodeResults = function(){
             }
         }
     }
+
+    createPathSummary();
 }
+
+
+createPathSummary = function()
+{
+    var numNodes = nodes.length;  
+    for (var i = 0; i < numNodes; i++) 
+    {
+        for(var j =0; j < numNodes; j++)
+        {
+          if( j == i)
+            continue;
+
+          var path = $.map(packetsDeliveredGlobal[i][j].slice(1,20), 
+            function(packet){ 
+            if(packet.path.length == 2) 
+            {
+                var pathDetails = 
+                  {
+                      "Path":routers[packet.path[0]].name + "-" + routers[packet.path[1]].name,
+                      "Decision Time Instant":packet.linkState.time.toFixed(1) + " msec"
+                  };
+                var connectedRouters = NodeRouterMap[i];
+                for( var k = 0; k < connectedRouters.length; k++)
+                {
+                    var routerId = connectedRouters[k];
+                    var linkState = packet.linkState.values[routerId];
+                    var columnName = "R" + (routerId + 1) + " Link Costs";
+                    pathDetails[columnName] = linkState;
+                }
+                return pathDetails;
+           }
+
+          });
+
+           if(path.length === 0)
+            continue;
+
+           var heading = "Path traced by packets from " + nodes[i].name + " to " + nodes[j].name;
+           columns = ["Decision Time Instant", "Path"];
+           var connectedRouters = NodeRouterMap[i];
+            for( var k = 0; k < connectedRouters.length; k++)
+            {
+                var routerId = connectedRouters[k];
+                var columnName = "R" + (routerId + 1) + " Link Costs";
+                columns.push(columnName)
+            }
+
+          createTable("pathTrace", heading, columns, path);  
+
+      }
+    };
+}
+
 
 // Common Stuff
 var addStatisticsCell = function(className, id){

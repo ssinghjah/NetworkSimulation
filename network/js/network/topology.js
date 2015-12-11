@@ -6,9 +6,11 @@ Topology.push([INFINITY, 0, 1, 1 ]);
 Topology.push([1, 1, 0, INFINITY ]);
 Topology.push([1, 1, INFINITY, 0 ]);
 
-var GetLinkCosts = function  () {
+var GetLinkCosts = function  (time) {
 	
-	var costs = [];
+	var costs = {};
+	costs.time = time;
+	costs.values = [];
 	var numRouters = Topology.length;
 	for( var i = 0; i < numRouters; i++)
 	{
@@ -24,7 +26,7 @@ var GetLinkCosts = function  () {
 			}
 		}
 		sourceCosts = sourceCosts.substring(0, sourceCosts.length - 2);
-		costs.push(sourceCosts);
+		costs.values.push(sourceCosts);
 	}
 	return costs;
 }

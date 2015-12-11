@@ -141,36 +141,6 @@ createRouterSummary = function(){
 }
 
 
-createPathSummary = function()
-{
-    var numNodes = nodes.length;  
-    for (var i = 0; i < numNodes; i++) 
-    {
-        for(var j =0; j < numNodes; j++)
-        {
-          if( j == i)
-            continue;
-
-          var path = $.map(packetsDeliveredGlobal[i][j], 
-            function(packet){ 
-            if(packet.path.length == 2) 
-              return {
-                      "Path":routers[packet.path[0]].name + "-" + routers[packet.path[1]].name,
-                      "R1 Link Costs":packet.linkState[0],
-                      "R2 Link Costs":packet.linkState[1],
-                      "R3 Link Costs":packet.linkState[2],
-                      "R4 Link Costs":packet.linkState[3]
-                    }
-
-          });
-          var heading = nodes[i].name + " to " + nodes[j].name;
-          columns = ["Path", "R1 Link Costs", "R2 Link Costs", "R3 Link Costs", "R4 Link Costs"];
-          createTable("pathTrace", heading, columns, path);  
-
-      }
-    };
-}
-
 calculateThroughput = function(packetsDelivered){
     var simTime = (SETTINGS.SimTime * SETTINGS.ConvertToSec);
     var throughput = parseFloat( packetsDelivered * (SETTINGS.PacketSize * 8)/simTime).toFixed(3);

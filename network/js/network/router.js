@@ -108,7 +108,7 @@ function Router( id, name, position, ignoreDest){
      	{
      		forwardingEntries.sort(function(a,b) {return a.totalCost - b.totalCost;});
      		var leastCostEntry = forwardingEntries[0];
-     		packet.linkState = GetLinkCosts();
+     		packet.linkState = GetLinkCosts(this.sim.time());
      		busy = true;
      		this.setTimer(SETTINGS.RouterProcessingTime).done(
 				function()
