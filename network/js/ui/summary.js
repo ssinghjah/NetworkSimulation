@@ -165,7 +165,7 @@ createPathSummary = function()
           });
           var heading = nodes[i].name + " to " + nodes[j].name;
           columns = ["Path", "R1 Link Costs", "R2 Link Costs", "R3 Link Costs", "R4 Link Costs"];
-          createTable("summary", heading, columns, path);  
+          createTable("pathTrace", heading, columns, path);  
 
       }
     };

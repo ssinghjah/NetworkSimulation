@@ -52,6 +52,14 @@ var onE2EDelay = function(){
 }
 
 
+var onPathTrace = function(){
+		hideResultsAndEditor();
+		$('.pathTrace').show();
+		$('.links').removeClass('active');
+		$('#pathTraceLink').addClass('active');
+}
+
+
 var onEventLog = function(){	
 		hideResultsAndEditor();
 		$('.eventLog').show();
