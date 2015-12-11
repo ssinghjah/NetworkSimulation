@@ -1,3 +1,6 @@
+packetsDeliveredGlobal = [];
+packetsTransmittedGlobal = [];
+
 displayResults = function( nodeAPackets, nodeBPackets){
 
     createSummary();

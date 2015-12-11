@@ -21,13 +21,13 @@ function Router( id, name, position, ignoreDest){
 		var isValid = validatePacket(message);
 		if(!isValid)
 			return
-		
+
 		inputQueue.push(message.packet);
 		message.packet.routerInputQueueDelays.push({id: routerId, delay:this.sim.time()});
 		if(!busy)
 			processPacket.call(this, message);
-	
 	}
+
 
 
 	var validatePacket = function(message)
@@ -100,6 +100,7 @@ function Router( id, name, position, ignoreDest){
 
 	var forwardToNextHopRouter = function( destRouters, packet){
 
+		packet.path.push(routerId);
 		// Compare cost to destinations in the Forwarding table and forward to least cost.
 		var forwardingEntries = $.grep(forwardingTable.entries, function(entry){ return $.inArray(entry.dest, destRouters) != -1;});
 
@@ -107,6 +108,7 @@ function Router( id, name, position, ignoreDest){
      	{
      		forwardingEntries.sort(function(a,b) {return a.totalCost - b.totalCost;});
      		var leastCostEntry = forwardingEntries[0];
+     		packet.linkState = GetLinkCosts();
      		busy = true;
      		this.setTimer(SETTINGS.RouterProcessingTime).done(
 				function()
@@ -115,6 +117,7 @@ function Router( id, name, position, ignoreDest){
 					sim.log(this.name + ": Cost to " + routers[forwardingEntries[1].nextHop].name + " : " + forwardingEntries[1].totalCost);
 					sim.log(this.name + ": Forwarding to next hop router " + routers[leastCostEntry.nextHop].name + " : From Node " + nodes[packet.src].name + ", To: Node " + nodes[packet.dest].name);
 					this.busyTime += SETTINGS.RouterProcessingTime;
+					packet.path.push(leastCostEntry.nextHop);
 					packet.rxTime += SETTINGS.RouterProcessingTime;
 					// send to router on the backhaul without csma cd
 					this.send( {packet : packet, status:"fromRouter"}, SETTINGS.InfinitesimalDelay, routers[leastCostEntry.nextHop]);

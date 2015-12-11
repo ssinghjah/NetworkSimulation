@@ -6,10 +6,12 @@ function Packet( src, dest, birthTime, interArrivalTime){
     this.numCollisions = 0;
     this.txTime = 0;
     this.rxTime = 0;
+    this.path = [];
+    this.linkState = [];
     this.nextAttemptTime = birthTime;
     this.interArrivalTime = interArrivalTime;
     this.routerInputQueueDelays = [];
-    this.routerOutputQueueDelays =[];
+    this.routerOutputQueueDelays = [];
 } 
 
 function PacketUtils(){

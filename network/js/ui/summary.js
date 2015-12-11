@@ -4,7 +4,7 @@ createSummary = function(){
     statisticsCell.append("label").text("Simulation Duration : " + ((sim.time()*SETTINGS.ConvertToSec).toFixed(1)) + " sec");
     createRouterSummary();
     createPerNodeSummary();    
-    
+    createPathSummary();
 }
 
 createPerDestinationNodeDetails = function( srcId, destId ){
@@ -18,6 +18,8 @@ createPerDestinationNodeDetails = function( srcId, destId ){
         var e2eDelay = 0, throughput = 0, collisionsPerPacket = 0, interArrivalTime = 0, numAttempts = 0;
 
         var packetsDeliveredList = $.grep(nodes[srcId].packets, function(packet){return packet.delivered && packet.dest == destId ;});
+       
+        packetsDeliveredGlobal[srcId][destId] = packetsDeliveredList;
         var packetsDelivered = packetsDeliveredList.length;
 
          // End to End Delay
@@ -37,6 +39,7 @@ createPerDestinationNodeDetails = function( srcId, destId ){
        
        //Number of Attempts and Collisions
        var packetsTransmittedList = $.grep(nodes[srcId].packets, function(packet){return packet.txTime > 0 && packet.dest == destId;});
+       packetsTransmittedGlobal[srcId][destId] = packetsDeliveredList;
        if(packetsTransmittedList.length > 0)
        {
          // Attempts 
@@ -76,7 +79,8 @@ createPerNodeSummary = function(){
         // Inter Arrival Time
        var interArrivalTimeList = $.map(nodes[i].packets, function(packet){return packet.interArrivalTime; });
        interArrivalTime = getAverage(interArrivalTimeList).toFixed(3) + " msec";
-
+       packetsDeliveredGlobal[i] = [];
+       packetsTransmittedGlobal[i] = [];
        var details = [];
         // destination nodes
         for(var j = 0; j < numNodes; j++)
@@ -134,6 +138,37 @@ createRouterSummary = function(){
     var heading = "Router Summary";
     columns = ["Name", "Utilization", "Input Queue Delay","Output Queue Delay", "Throughput"];
     createTable("summary", heading, columns, routerSummary);          
+}
+
+
+createPathSummary = function()
+{
+    var numNodes = nodes.length;  
+    for (var i = 0; i < numNodes; i++) 
+    {
+        for(var j =0; j < numNodes; j++)
+        {
+          if( j == i)
+            continue;
+
+          var path = $.map(packetsDeliveredGlobal[i][j], 
+            function(packet){ 
+            if(packet.path.length == 2) 
+              return {
+                      "Path":routers[packet.path[0]].name + "-" + routers[packet.path[1]].name,
+                      "R1 Link Costs":packet.linkState[0],
+                      "R2 Link Costs":packet.linkState[1],
+                      "R3 Link Costs":packet.linkState[2],
+                      "R4 Link Costs":packet.linkState[3]
+                    }
+
+          });
+          var heading = nodes[i].name + " to " + nodes[j].name;
+          columns = ["Path", "R1 Link Costs", "R2 Link Costs", "R3 Link Costs", "R4 Link Costs"];
+          createTable("summary", heading, columns, path);  
+
+      }
+    };
 }
 
 calculateThroughput = function(packetsDelivered){
