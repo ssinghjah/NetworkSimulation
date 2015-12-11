@@ -30,13 +30,20 @@ createPerNodeResults = function(){
     // End to End Delays
     for(var i=0; i<numNodes; i++)
     {
-        var packetsDelivered = $.grep(nodes[i].packets, function( packet ) {return packet.rxTime > 0;});
+      for(var j=0; j < numNodes; j++)
+      {
+        if(j==i)
+          continue;
+
+        var packetsDelivered = packetsDeliveredGlobal[i][j];
         if(packetsDelivered.length > 0){
             values = $.map(packetsDelivered, function(packet){return packet.rxTime - packet.birthTime;});
-            label = "Node " + nodes[i].name + ": End to End Delay (ms)";
+            label = "Node " + nodes[i].name + " to " + nodes[j].name + " : End to End Delay (ms)";
             createLinePlot(values, label, "e2eDelay linePlot results");
             createHistogram(values, label + " Histogram", "e2eDelay results", 20);
         }
+      }
+
     } 
 
     // Collisions per packets from node i to node j

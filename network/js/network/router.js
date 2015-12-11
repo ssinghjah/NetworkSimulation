@@ -18,6 +18,8 @@ function Router( id, name, position, ignoreDest){
 	var mediumOutputQueue = [];
 	var lowOutputQueue = [];
 	var busy = false;
+	var maxQueueSize = 3;
+	this.packetsDropped = 0;
 
 	this.onMessage = function(sender,message)
 	{
@@ -28,6 +30,7 @@ function Router( id, name, position, ignoreDest){
 			return
 
 		putPacketinQueue(message.packet);
+		//DropPacketsIfInputQueueFull.call(this);
 		message.packet.routerInputQueueDelays.push({id: routerId, delay:this.sim.time()});
 		if(!busy)
 			processPacket.call(this, message);
@@ -99,6 +102,7 @@ function Router( id, name, position, ignoreDest){
 				packet.routerOutputQueueDelays.push({id: routerId, delay:this.sim.time()});
 				packet.routerProcessingDelays.push(SETTINGS.RouterProcessingTime);
 				putPacketInOutputQueue(packet);
+				//DropPacketsIfOutputQueueFull.call(this);
 				busy = false;
 				processPacket.call(this);
 			});
@@ -139,6 +143,54 @@ function Router( id, name, position, ignoreDest){
 			});
      	}
 	}
+
+	var DropPacketsFromQueue = function(queueToFlush, queue1, queue2){
+		var totalLength = queueToFlush.length + queue1.length + queue2.length;
+		if( totalLength > maxQueueSize)
+		{
+			var excess = totalLength - maxQueueSize;
+			if(queueToFlush.length > 0)
+			{
+				alert("Dropping packets");
+				if(queueToFlush.length < excess )
+				{
+					this.packetsDropped += queueToFlush.length;
+					queueToFlush = [];
+					$.each(queueToFlush, function(packet){
+						packet.dropped = true;
+					})
+				}
+				else
+				{
+					var toRetain = queueToFlush.length - excess;
+					this.packetsDropped += excess;
+				
+					for(var i = toRetain; i < excess; i++){
+						queueToFlush[i].dropped = true;
+					}
+					queueToFlush = queueToFlush.slice(0 , toRetain);
+				}
+			}
+		}
+	}
+
+	var DropPacketsIfInputQueueFull = function(queue){
+		
+		DropPacketsFromQueue.call(this, lowInputQueue, mediumInputQueue, highInputQueue);
+		DropPacketsFromQueue.call(this, mediumInputQueue, lowInputQueue, highInputQueue);
+		DropPacketsFromQueue.call(this, highInputQueue, lowInputQueue, mediumInputQueue);
+		
+	}
+
+
+	var DropPacketsIfOutputQueueFull = function(){
+
+		DropPacketsFromQueue.call(this,lowOutputQueue, highOutputQueue, mediumOutputQueue);
+		DropPacketsFromQueue.call(this,mediumOutputQueue, lowOutputQueue, highOutputQueue);
+		DropPacketsFromQueue.call(this, highOutputQueue, mediumOutputQueue, lowOutputQueue);
+		
+	}
+
 
 	var getPacketFromQueue = function(){
 
