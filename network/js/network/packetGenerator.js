@@ -16,6 +16,7 @@ this.generate = function(src, random)
 {    
     var totalTime = 0;
     var packets = [];
+    var priority = SETTINGS.NodePriority[src];
     
     while(totalTime < SETTINGS.SimTime ){
        
@@ -23,7 +24,7 @@ this.generate = function(src, random)
         var nextTimeInterval = nextFrameNum * SETTINGS.FrameSlot;
         var birthTime = totalTime + nextTimeInterval;
         var dest = selectDestination(src);
-        packets.push(new Packet(src, dest, birthTime, nextTimeInterval));
+        packets.push(new Packet(src, dest, birthTime, nextTimeInterval, priority));
         totalTime += nextTimeInterval;    
     }
     return packets;

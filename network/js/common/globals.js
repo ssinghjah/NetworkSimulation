@@ -7,4 +7,4 @@ var NodeSubnetMap = [[1],[0],[3],[2]];
 var TotalNumNodes = 4;
 var RouterIdOffset = 10;
 var ChangeTopology = false;
-
+var NodePriority = [1,1,1,1];

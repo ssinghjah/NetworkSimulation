@@ -13,6 +13,14 @@ var onChangeTopology = function(){
 		$('#changeTopology').show();
 }
 
+var onSetPriority = function(){
+		hideResultsAndEditor();
+		$('.links').removeClass('active');
+		$('#setPriorityLink').addClass('active');
+		$('#setPriority').show();
+}
+
+
 var onChangeTopologyCheckbox = function(checkbox){
 	if(checkbox.checked){
 		ChangeTopology = true;
@@ -29,6 +37,7 @@ var hideResultsAndEditor = function(){
 	$('div.results').hide();
 	$('#editor').hide();
 	$('#changeTopology').hide();
+	$('#setPriority').hide();
 }
 
 var onSummary = function(){

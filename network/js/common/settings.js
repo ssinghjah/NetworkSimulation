@@ -12,6 +12,7 @@ SETTINGS.InterNodeDistance = 2000; // In meters
 SETTINGS.RouterProcessingTime = 0.1; // In Milliseconds
 SETTINGS.LinkCostUpdateInterval = 2; // In Milliseconds
 SETTINGS.NumPathTrace = 20;
+SETTINGS.NodePriority = [1,1,1,1];
 
 // Not Configurable by user
 SETTINGS.InfinitesimalDelay = 0.001;
@@ -49,6 +50,10 @@ SETTINGS.UpdatefromUI = function(){
 	SETTINGS.LinkCostUpdateInterval = parseFloat(document.getElementById('linkCostUpdateInterval').value); // In milliseconds 
 	SETTINGS.NumPathTrace = parseFloat(document.getElementById('numPathTrace').value);
 	SETTINGS.FrameSlot = parseFloat(document.getElementById('frameSlot').value);
+	SETTINGS.NodePriority[0] = $("#nodeAPriority .active input").data("priority");
+	SETTINGS.NodePriority[1] = $("#nodeBPriority .active input").data("priority");
+	SETTINGS.NodePriority[2] = $("#nodeCPriority .active input").data("priority");
+	SETTINGS.NodePriority[3] = $("#nodeDPriority .active input").data("priority");
 }
 
 $(document).ready(function(){

@@ -59,6 +59,9 @@
                     <a href="#" id="changeTopologyLink" class="links" onclick="onChangeTopology();">Change Topology</a>
                 </li>
                 <li>
+                    <a href="#" id="setPriorityLink" class="links" onclick="onSetPriority();">Set Priority</a>
+                </li>
+                <li>
                     <a href="#" id="packetDelaysLink" class="links pernode results" onclick="onPacketDelays();">Packet Delays</a>
                 </li>
                 <li>
@@ -286,6 +289,84 @@
                       <section class="panel-footer">
                         <p>Enter link costs. Leave blank to disconnect</p>
                      </section>
+              </section> 
+              </div>
+            </div>
+             <!-- Change Topology -->
+
+            <!-- Set Priority -->
+            <div class="row">
+              <div class = "col-md-offset-1 col-md-10">
+                <section id = "setPriority" class="panel panel-default" style ="display:none">
+                       <div class="panel-heading">
+                          Set Priority
+                       </div>
+                       <section class ="controls panel-body">
+                          <div class="row paddingTop">
+                          <div class="col-sm-2"><p>Node A</p></div>
+                          <div class="col-sm-8">
+                              <div class="btn-group" id ="nodeAPriority" data-toggle="buttons">
+                                  <label class="btn btn-default">
+                                      <input type="radio" data-priority = 3 value="White House" /> White House
+                                  </label> 
+                                  <label class="btn btn-default">
+                                      <input type="radio"  data-priority = 2 value="Skype" /> Skype
+                                  </label> 
+                                  <label class="btn btn-default active">
+                                      <input type="radio" data-priority = 1 value="CounterStrike" /> Counter Strike (LAN Gaming) 
+                                  </label>
+                              </div>
+                          </div>
+                        </div>
+                        <div class="row paddingTop">
+                          <div class="col-sm-2"><p>Node B</p></div>
+                          <div class="col-sm-8">
+                              <div class="btn-group" id ="nodeBPriority" data-toggle="buttons">
+                                  <label class="btn btn-default">
+                                      <input type="radio" data-priority = 3 value="White House" /> White House
+                                  </label> 
+                                  <label class="btn btn-default">
+                                      <input type="radio"  data-priority = 2 value="Skype" /> Skype
+                                  </label> 
+                                  <label class="btn btn-default active">
+                                      <input type="radio" data-priority = 1 value="CounterStrike" /> Counter Strike (LAN Gaming) 
+                                  </label>
+                              </div>
+                          </div>
+                        </div>
+                        <div class="row paddingTop">
+                          <div class="col-sm-2"><p>Node C</p></div>
+                          <div class="col-sm-8">
+                              <div class="btn-group" id ="nodeCPriority" data-toggle="buttons">
+                                  <label class="btn btn-default">
+                                      <input type="radio" data-priority = 3 value="White House" /> White House
+                                  </label> 
+                                  <label class="btn btn-default">
+                                      <input type="radio"  data-priority = 2 value="Skype" /> Skype
+                                  </label> 
+                                  <label class="btn btn-default active">
+                                      <input type="radio" data-priority = 1 value="CounterStrike" /> Counter Strike (LAN Gaming) 
+                                  </label>
+                              </div>
+                          </div>
+                        </div>
+                        <div class="row paddingTop">
+                          <div class="col-sm-2"><p>Node D</p></div>
+                          <div class="col-sm-8">
+                              <div class="btn-group" id ="nodeDPriority" data-toggle="buttons">
+                                  <label class="btn btn-default">
+                                      <input type="radio" data-priority = 3 value="White House" /> White House
+                                  </label> 
+                                  <label class="btn btn-default">
+                                      <input type="radio"  data-priority = 2 value="Skype" /> Skype
+                                  </label> 
+                                  <label class="btn btn-default active">
+                                      <input type="radio" data-priority = 1 value="CounterStrike" /> Counter Strike (LAN Gaming) 
+                                  </label>
+                              </div>
+                          </div>
+                        </div>
+                      </section>
               </section> 
               </div>
             </div>

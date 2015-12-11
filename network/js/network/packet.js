@@ -1,4 +1,4 @@
-function Packet( src, dest, birthTime, interArrivalTime){
+function Packet( src, dest, birthTime, interArrivalTime, priority){
 
     this.birthTime = birthTime;
     this.src = src;
@@ -8,6 +8,7 @@ function Packet( src, dest, birthTime, interArrivalTime){
     this.rxTime = 0;
     this.path = [];
     this.linkState = [];
+    this.priority = priority;
     this.nextAttemptTime = birthTime;
     this.interArrivalTime = interArrivalTime;
     this.routerInputQueueDelays = [];
@@ -43,6 +44,8 @@ PacketUtils.UpdateOutputQueueDelay = function( packet, routerId, now){
 		{
 			queueDelay[0].delay = now - queueDelay[0].delay;
 			delay = queueDelay[0].delay;
+			if(delay < 0)
+				alert("error");
 		}
 		return delay;
 }

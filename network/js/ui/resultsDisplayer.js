@@ -289,7 +289,10 @@ function getAverage(array){
     for (var i = 0; i < length; i++) {
         total += array[i];
     }
-    return total / length;
+    if (length == 0)
+        return 0;
+    else
+        return total / length;
 }
 
 var margin = {top: 50, right: 30, bottom: 50, left: 70},

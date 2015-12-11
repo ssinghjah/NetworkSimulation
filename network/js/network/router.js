@@ -11,7 +11,12 @@ function Router( id, name, position, ignoreDest){
 	this.outputQueueDelay = [];
 	this.busyTime = 0;
 	var busPacket = null;
-	var inputQueue = [];
+	var highInputQueue = [];
+	var mediumInputQueue = [];
+	var lowInputQueue = [];
+	var highOutputQueue = [];
+	var mediumOutputQueue = [];
+	var lowOutputQueue = [];
 	var busy = false;
 
 	this.onMessage = function(sender,message)
@@ -22,7 +27,7 @@ function Router( id, name, position, ignoreDest){
 		if(!isValid)
 			return
 
-		inputQueue.push(message.packet);
+		putPacketinQueue(message.packet);
 		message.packet.routerInputQueueDelays.push({id: routerId, delay:this.sim.time()});
 		if(!busy)
 			processPacket.call(this, message);
@@ -93,7 +98,7 @@ function Router( id, name, position, ignoreDest){
 				this.busyTime += SETTINGS.RouterProcessingTime;
 				packet.routerOutputQueueDelays.push({id: routerId, delay:this.sim.time()});
 				packet.routerProcessingDelays.push(SETTINGS.RouterProcessingTime);
-				busQueue.push(packet);
+				putPacketInOutputQueue(packet);
 				busy = false;
 				processPacket.call(this);
 			});
@@ -135,12 +140,86 @@ function Router( id, name, position, ignoreDest){
      	}
 	}
 
+	var getPacketFromQueue = function(){
+
+		if(highInputQueue.length > 0)
+			return highInputQueue.shift();
+		else if(mediumInputQueue.length > 0)
+			return mediumInputQueue.shift();
+		else if(lowInputQueue.length > 0)
+			return lowInputQueue.shift();
+		else
+			return null;
+	}
+
+	var putPacketinQueue = function(packet){
+		
+		switch(packet.priority)
+		{
+			case 1:
+			{
+				lowInputQueue.push(packet);
+				break;
+			}
+
+			case 2:
+			{
+				mediumInputQueue.push(packet);
+				break;
+			}
+
+			case 3:
+			{
+				highInputQueue.push(packet);
+				break;
+			}
+		}		
+	}
+
+
+	var putPacketInOutputQueue = function(packet){
+		
+		switch(packet.priority)
+		{
+			case 1:
+			{
+				lowOutputQueue.push(packet);
+				break;
+			}
+
+			case 2:
+			{
+				mediumOutputQueue.push(packet);
+				break;
+			}
+
+			case 3:
+			{
+				highOutputQueue.push(packet);
+				break;
+			}
+		}		
+	}
+
+	var getPacketFromOutputQueue = function(){
+
+		if(highOutputQueue.length > 0)
+			return highOutputQueue.shift();
+		else if(mediumOutputQueue.length > 0)
+			return mediumOutputQueue.shift();
+		else if(lowOutputQueue.length > 0)
+			return lowOutputQueue.shift();
+		else
+			return null;
+	}
+
+
 	var processPacket = function(){
 
-		if(inputQueue.length < 1 )
-				return;
-			
-		var packet = inputQueue.shift();
+		var packet = getPacketFromQueue();
+		if(packet == null)
+			return;
+
 		var dest = packet.dest;
 		updateInputQueueDelay.call(this, packet, routerId);
 		packet.path.push(routerId);					 	
@@ -187,38 +266,40 @@ function Router( id, name, position, ignoreDest){
 
 	var onPacketAttempt = function(){
 		
-		if(busQueue.length < 1 )
+		if(null == busPacket)
 			return;
 
-		busQueue[0].rxTime = this.sim.time(); 
+		busPacket.rxTime = this.sim.time(); 
 	}
 
 	var onPacketSent = function(){
 
-		if(busQueue.length < 1 )
+		if(null == busPacket)
 			return;
 
 		// Remove and update the transmitted packet
-		busQueue[0].delivered = true;
+		busPacket.delivered = true;
 		this.packetsDelivered++;
 
 		// Rx time contains txTime from router. Calculate Output Queue Delay before updating Rx time.
-		updateOutputQueueDelay.call(this, busQueue[0], busQueue[0].rxTime);
+		updateOutputQueueDelay.call(this, busPacket, busPacket.rxTime);
 		
 		// Update Rx time
-		busQueue[0].rxTime += SETTINGS.InterNodeDistance / SETTINGS.PropagationSpeed + SETTINGS.TransmissionTime;
-		busQueue[0].transmissionDelays += SETTINGS.TransmissionTime;
-		busQueue[0].propagationDelays += SETTINGS.InterNodeDistance / SETTINGS.PropagationSpeed;
+		busPacket.rxTime += SETTINGS.InterNodeDistance / SETTINGS.PropagationSpeed + SETTINGS.TransmissionTime;
+		busPacket.transmissionDelays += SETTINGS.TransmissionTime;
+		busPacket.propagationDelays += SETTINGS.InterNodeDistance / SETTINGS.PropagationSpeed;
 
-		sim.log(this.name + " : Packet Delivered from " + busQueue[0].src + " to " + busQueue[0].dest)
-		busQueue.shift();
+		sim.log(this.name + " : Packet Delivered from " + busPacket.src + " to " + busPacket.dest)
 	}
 
 	var onBusFree = function(){
-			if(busQueue.length < 1)
-				return;
-			busQueue[0].srcRouterId = routerId;
-			this.csmaCd.attemptToTransmit( busQueue[0]);
+
+		busPacket = getPacketFromOutputQueue();
+		if(null == busPacket)
+			return;
+
+		busPacket.srcRouterId = routerId;
+		this.csmaCd.attemptToTransmit( busPacket);
 	}
 }
 
