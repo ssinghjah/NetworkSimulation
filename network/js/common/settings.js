@@ -10,6 +10,8 @@ SETTINGS.MeanInterPacket = 2; // Number of packets
 SETTINGS.SimTime = 500; // In milli seconds
 SETTINGS.InterNodeDistance = 2000; // In meters
 SETTINGS.RouterProcessingTime = 0.1; // In Milliseconds
+SETTINGS.LinkCostUpdateInterval = 2; // In Milliseconds
+SETTINGS.NumPathTrace = 20;
 
 // Not Configurable by user
 SETTINGS.InfinitesimalDelay = 0.001;
@@ -20,7 +22,6 @@ SETTINGS.ConvertToMilliSec = Math.pow(10,3);
 SETTINGS.MaxPerNodeResultsToDisplay = 5;
 SETTINGS.RedCollisionsThreshold = 8; // Collisions per packet greater than this value are considered to be "red" - in the danger zone. 
 SETTINGS.NumberOfNodes = 4;
-SETTINGS.LinkCostUpdateInterval = 2; // In milliseconds
 
 
 SETTINGS.UpdateUI = function(){
@@ -30,7 +31,9 @@ SETTINGS.UpdateUI = function(){
 	document.getElementById('transmissionRate').value = SETTINGS.TransmissionRate; // In Mbps
 	document.getElementById('packetInterArrival').value = SETTINGS.MeanInterPacket // In Frame Slots
 	document.getElementById('simDuration').value = SETTINGS.SimTime / 1000; // In Seconds
-	document.getElementById('routerProcTime').value = SETTINGS.RouterProcessingTime // In milliseconds 
+	document.getElementById('routerProcTime').value = SETTINGS.RouterProcessingTime; // In milliseconds 
+	document.getElementById('linkCostUpdateInterval').value = SETTINGS.LinkCostUpdateInterval; // In milliseconds 
+	document.getElementById('numPathTrace').value = SETTINGS.NumPathTrace; 
 
 }
 
@@ -43,8 +46,9 @@ SETTINGS.UpdatefromUI = function(){
 	SETTINGS.MeanInterPacket = parseFloat(document.getElementById('packetInterArrival').value); // In Frame Slots
 	SETTINGS.TransmissionTime = ((SETTINGS.PacketSize*8)/(SETTINGS.TransmissionRate*Math.pow(10,6)))*SETTINGS.ConvertToMilliSec; 
 	SETTINGS.SimTime = parseFloat(document.getElementById('simDuration').value) * 1000; // In Milli Seconds
-	SETTINGS.RouterProcessingTime = parseFloat(document.getElementById('routerProcTime').value) // In milliseconds 
-
+	SETTINGS.RouterProcessingTime = parseFloat(document.getElementById('routerProcTime').value); // In milliseconds 
+	SETTINGS.LinkCostUpdateInterval = parseFloat(document.getElementById('linkCostUpdateInterval').value); // In milliseconds 
+	SETTINGS.NumPathTrace = parseFloat(document.getElementById('numPathTrace').value);
 }
 
 $(document).ready(function(){

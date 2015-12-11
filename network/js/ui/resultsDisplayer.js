@@ -79,14 +79,14 @@ createPathSummary = function()
           if( j == i)
             continue;
 
-          var path = $.map(packetsDeliveredGlobal[i][j].slice(1,20), 
+          var path = $.map(packetsDeliveredGlobal[i][j].slice(1,SETTINGS.NumPathTrace), 
             function(packet){ 
             if(packet.path.length == 2) 
             {
                 var pathDetails = 
                   {
                       "Path":routers[packet.path[0]].name + "-" + routers[packet.path[1]].name,
-                      "Decision Time Instant":packet.linkState.time.toFixed(1) + " msec"
+                      "Time Instant":packet.linkState.time.toFixed(1) + " msec"
                   };
                 var connectedRouters = NodeRouterMap[i];
                 for( var k = 0; k < connectedRouters.length; k++)
@@ -105,7 +105,7 @@ createPathSummary = function()
             continue;
 
            var heading = "Path traced by packets from " + nodes[i].name + " to " + nodes[j].name;
-           columns = ["Decision Time Instant", "Path"];
+           columns = ["Time Instant", "Path"];
            var connectedRouters = NodeRouterMap[i];
             for( var k = 0; k < connectedRouters.length; k++)
             {
@@ -114,7 +114,7 @@ createPathSummary = function()
                 columns.push(columnName)
             }
 
-          createTable("pathTrace", heading, columns, path);  
+          createTable("pathTrace results", heading, columns, path);  
 
       }
     };

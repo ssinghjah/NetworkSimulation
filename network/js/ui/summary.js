@@ -4,7 +4,6 @@ createSummary = function(){
     statisticsCell.append("label").text("Simulation Duration : " + ((sim.time()*SETTINGS.ConvertToSec).toFixed(1)) + " sec");
     createRouterSummary();
     createPerNodeSummary();    
-    createPathSummary();
 }
 
 createPerDestinationNodeDetails = function( srcId, destId ){
