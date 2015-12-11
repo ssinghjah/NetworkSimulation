@@ -92,6 +92,7 @@ function Router( id, name, position, ignoreDest){
 				sim.log(this.name + ": Forwarding packet using CSMA CD : From Node " + nodes[packet.src].name + ", To: Node " + nodes[packet.dest].name);
 				this.busyTime += SETTINGS.RouterProcessingTime;
 				packet.routerOutputQueueDelays.push({id: routerId, delay:this.sim.time()});
+				packet.routerProcessingDelays.push(SETTINGS.RouterProcessingTime);
 				busQueue.push(packet);
 				busy = false;
 				processPacket.call(this);
@@ -124,6 +125,7 @@ function Router( id, name, position, ignoreDest){
 					sim.log(this.name + ": Forwarding to next hop router " + routers[leastCostEntry.nextHop].name + " : From Node " + nodes[packet.src].name + ", To: Node " + nodes[packet.dest].name);
 					this.busyTime += SETTINGS.RouterProcessingTime;
 					packet.rxTime += SETTINGS.RouterProcessingTime;
+					packet.routerProcessingDelays.push(SETTINGS.RouterProcessingTime);
 					this.packetsProcessed++;
 					// send to router on the backhaul without csma cd
 					this.send( {packet : packet, status:"fromRouter"}, SETTINGS.InfinitesimalDelay, routers[leastCostEntry.nextHop]);
@@ -205,13 +207,14 @@ function Router( id, name, position, ignoreDest){
 		
 		// Update Rx time
 		busQueue[0].rxTime += SETTINGS.InterNodeDistance / SETTINGS.PropagationSpeed + SETTINGS.TransmissionTime;
-		
+		busQueue[0].transmissionDelays += SETTINGS.TransmissionTime;
+		busQueue[0].propagationDelays += SETTINGS.InterNodeDistance / SETTINGS.PropagationSpeed;
+
 		sim.log(this.name + " : Packet Delivered from " + busQueue[0].src + " to " + busQueue[0].dest)
 		busQueue.shift();
 	}
 
 	var onBusFree = function(){
-
 			if(busQueue.length < 1)
 				return;
 			busQueue[0].srcRouterId = routerId;

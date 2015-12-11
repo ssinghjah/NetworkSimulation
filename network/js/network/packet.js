@@ -12,6 +12,9 @@ function Packet( src, dest, birthTime, interArrivalTime){
     this.interArrivalTime = interArrivalTime;
     this.routerInputQueueDelays = [];
     this.routerOutputQueueDelays = [];
+    this.routerProcessingDelays = [];
+    this.propagationDelays = 0;
+    this.transmissionDelays = 0;
     this.srcRouterId = -1;
 } 
 
@@ -40,8 +43,6 @@ PacketUtils.UpdateOutputQueueDelay = function( packet, routerId, now){
 		{
 			queueDelay[0].delay = now - queueDelay[0].delay;
 			delay = queueDelay[0].delay;
-			if(delay < 0)
-				alert("Error");
 		}
 		return delay;
 }

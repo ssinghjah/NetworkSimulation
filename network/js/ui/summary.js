@@ -29,6 +29,7 @@ createPerDestinationNodeDetails = function( srcId, destId ){
            e2eDelay = e2eDelay.toFixed(3) + " msec";
         }
 
+
         // Throughput
         if(packetsDeliveredList.length > 0)
         { 
@@ -53,7 +54,7 @@ createPerDestinationNodeDetails = function( srcId, destId ){
 
       var successfulAttempts = numAttempts == 0 ? 0 : packetsDelivered/numAttempts;
       var details = {
-      "Desination": destination.name,
+      "Destination": destination.name,
       "Throughput":throughput, 
       "Packets Delivered":packetsDelivered,
       "Number of Attempts":numAttempts,
@@ -96,7 +97,7 @@ createPerNodeSummary = function(){
         }
 
         var heading = "Node " + nodes[i].name + " Summary";
-        columns = ["Desination", "Throughput", "Packets Delivered", "Number of Attempts", "Successful Attempts", "Collisions per packet", "Average End to End Delay"];
+        columns = ["Destination", "Throughput", "Packets Delivered", "Number of Attempts", "Successful Attempts", "Collisions per packet", "Average End to End Delay"];
         createTable("summary", heading, columns, details);
         
     }

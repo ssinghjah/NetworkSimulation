@@ -79,6 +79,14 @@ var onPathTrace = function(){
 }
 
 
+var onPacketDelays = function(){
+		hideResultsAndEditor();
+		$('.packetDelays').show();
+		$('.links').removeClass('active');
+		$('#packetDelaysLink').addClass('active');
+}
+
+
 var onEventLog = function(){	
 		hideResultsAndEditor();
 		$('.eventLog').show();

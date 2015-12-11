@@ -25,10 +25,12 @@ Node.prototype.start = function(){
 Node.prototype.onPacketSent = function(){
         
         // If there is not collision yet, packet has been delivered 
-        this.packets[this.currentPacket].rxTime =  this.packets[this.currentPacket].nextAttemptTime + this.maxPropagationDelay + SETTINGS.TransmissionTime;
+        this.packets[this.currentPacket].rxTime =  this.packets[this.currentPacket].txTime + this.maxPropagationDelay + SETTINGS.TransmissionTime;
         if($.inArray(this.packets[this.currentPacket].dest, NodeSubnetMap[this.nodeId]) !== -1) {
             
             this.packets[this.currentPacket].delivered = true;
+            this.packets[this.currentPacket].transmissionDelays += SETTINGS.TransmissionTime;
+            this.packets[this.currentPacket].propagationDelays += this.maxPropagationDelay;
         }
         this.currentPacket++;
 }

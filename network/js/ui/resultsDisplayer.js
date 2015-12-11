@@ -66,7 +66,154 @@ createPerNodeResults = function(){
     }
 
     createPathSummary();
+    createPacketDelayDetails();
 }
+
+
+
+
+createPacketDelayDetails = function(){
+
+    var numNodes = nodes.length;
+    
+    // Source nodes
+    for(var i = 0; i < numNodes; i++)
+    {
+
+        // Inter Arrival Time
+       var details = [];
+        // destination nodes
+        for(var j = 0; j < numNodes; j++)
+        {
+            if( j == i)
+            {
+              continue;
+            }
+            else
+            {
+
+                var simTime = (SETTINGS.SimTime * SETTINGS.ConvertToSec);
+              
+                var destination = nodes[j];
+            
+                var packetsDeliveredList = packetsDeliveredGlobal[i][j];
+                var packetsDelivered = packetsDeliveredList.length;
+
+                 // End to End Delay
+                if(packetsDeliveredList.length > 0)
+                {
+                   var e2eDelayList = $.map(packetsDeliveredList, function(packet){return packet.rxTime - packet.birthTime;});
+                   var e2eDelay = getAverage(e2eDelayList);   
+                   e2eDelay = e2eDelay.toFixed(3) + " msec";
+                }
+
+
+                // Router Input Queue Delay
+                if(packetsDeliveredList.length > 0)
+                {
+                   var routerInputDelayList = $.map(packetsDeliveredList, function(packet)
+                   {
+                      var numDelays = packet.routerInputQueueDelays.length;
+                      var totalDelay = 0;
+                      for( var i = 0; i < numDelays; i++)
+                      {
+                        totalDelay += packet.routerInputQueueDelays[i].delay;
+                      }
+                      return totalDelay;
+                   });
+                   var routerInputQueueDelay = getAverage(routerInputDelayList);   
+                   routerInputQueueDelay = routerInputQueueDelay.toFixed(3) + " msec";
+                }
+
+                // Node Output Queue Delay
+                if(packetsDeliveredList.length > 0)
+                {
+                   var nodeOutputDelayList = $.map(packetsDeliveredList, function(packet)
+                   {
+                      return packet.txTime - packet.birthTime;
+                   });
+                   var nodeOutputDelay = getAverage(nodeOutputDelayList);   
+                   nodeOutputDelay = nodeOutputDelay.toFixed(3) + " msec";
+                }
+
+                // Router Output Queue Delay
+                if(packetsDeliveredList.length > 0)
+                {
+                   var routerOutputDelayList = $.map(packetsDeliveredList, function(packet)
+                   {
+                      var numDelays = packet.routerOutputQueueDelays.length;
+                      var totalDelay = 0;
+                      for( var i = 0; i < numDelays; i++)
+                      {
+                        totalDelay += packet.routerOutputQueueDelays[i].delay;
+                      }
+                      return totalDelay;
+                   });
+                   var routerOutputQueueDelay = getAverage(routerOutputDelayList);   
+                   routerOutputQueueDelay = routerOutputQueueDelay.toFixed(3) + " msec";
+                }
+
+                // Router Processing Delay
+                if(packetsDeliveredList.length > 0)
+                {
+                   var routerProcessingDelayList = $.map(packetsDeliveredList, function(packet)
+                   {
+                      var numDelays = packet.routerProcessingDelays.length;
+                      var totalDelay = 0;
+                      for( var i = 0; i < numDelays; i++)
+                      {
+                        totalDelay += packet.routerProcessingDelays[i];
+                      }
+                      return totalDelay;
+                   });
+                   var routerProcessingDelay = getAverage(routerProcessingDelayList);   
+                   routerProcessingDelay = routerProcessingDelay.toFixed(3) + " msec";
+                }
+
+
+                 // Transmission Delays
+                if(packetsDeliveredList.length > 0)
+                {
+                   var transmissionDelayList = $.map(packetsDeliveredList, function(packet){return packet.transmissionDelays;});
+                   var transmissionDelay = getAverage(transmissionDelayList);   
+                   transmissionDelay = transmissionDelay.toFixed(3) + " msec";
+                }
+
+
+                // Propagation Delays
+                if(packetsDeliveredList.length > 0)
+                {
+                   var propagationDelayList = $.map(packetsDeliveredList, function(packet){return packet.propagationDelays;});
+                   var propagationDelay = getAverage(propagationDelayList);   
+                   propagationDelay = propagationDelay.toFixed(3) + " msec";
+                }
+
+
+                  
+                  var detail = {
+                  "Destination": destination.name,
+                  "Node Output Queue": nodeOutputDelay,
+                  "Router Input Queue":routerInputQueueDelay,
+                  "Router Output Queue":routerOutputQueueDelay,
+                  "Router Processing" : routerProcessingDelay,
+                  "Transmission":transmissionDelay,
+                  "Propagation":propagationDelay,
+                  "End to End" : e2eDelay, 
+                };
+
+                details.push(detail);
+    
+            }
+        }
+
+        var heading = "Node " + nodes[i].name + " Delays";
+        columns = ["Destination", "Node Output Queue", "Router Input Queue", "Router Processing", "Router Output Queue", "Propagation", "Transmission", "End to End"];
+        createTable("results packetDelays", heading, columns, details);
+        
+    }
+
+}
+
 
 
 createPathSummary = function()
