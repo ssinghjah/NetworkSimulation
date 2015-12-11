@@ -21,3 +21,7 @@ svg {
 	width:100%;
 	border:1px solid gray;
 }
+
+.fullWidth {
+	width:100%;
+}

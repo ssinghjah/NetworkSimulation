@@ -50,10 +50,10 @@
                     </button>
                 </li>
                 <li>
-
+                    <a href="#" id="editLink" class="links" onclick="onEdit();">Edit Parameters</a>
                 </li>
                 <li>
-                    <a href="#" id="editLink" class="links" onclick="onEdit();">Edit Parameters</a>
+                    <a href="#" id="changeTopologyLink" class="links" onclick="onChangeTopology();">Change Topology</a>
                 </li>
                 <li>
                     <a href="#" id="summaryLink" class="links results" onclick="onSummary();">Summary</a>
@@ -105,9 +105,7 @@
               </div>
               <!-- Results -->
 
-                
-            
-              <!-- Simulation Editor -->        
+            <!-- Simulation Editor -->        
             <div class="row">
                 <div class = "col-md-offset-1 col-md-10">
                   <section id = "editor" class="panel panel-default" style ="display:none">
@@ -130,14 +128,6 @@
                             <div class="col-xs-4">
                               <input id = "routerProcTime" type="text"/>
                             </div>
-                          </div>
-                          <div class="row paddingTop">
-                                <div class="col-xs-8">
-                                  <p> Frame Slot Duration (milli sec)</p>
-                                </div>
-                                <div class="col-xs-4">
-                                  <input id = "frameSlot" type="text"/>
-                                </div>
                           </div>
                           <div class="row paddingTop">
                             <div class="col-xs-8">
@@ -188,6 +178,112 @@
             </div>
             <!-- Simulation Editor -->
             </div>
+
+            <!-- Change Topology -->
+            <div class="row">
+              <div class = "col-md-offset-1 col-md-10">
+                <section id = "changeTopology" class="panel panel-default" style ="display:none">
+                       <div class="panel-heading">
+                          Change Topology
+                       </div>
+                       <section class ="controls panel-body">
+                          <div class="row paddingTop">
+                                <div class="col-xs-1">
+                                  <p> R1-R2</p>
+                                </div>
+                                <div class="col-xs-1">
+                                  <input class = "fullWidth" id = "R1R2" type="text"/>
+                                </div>
+                                <div class="col-xs-1 col-xs-offset-1">
+                                  <p> R1-R3</p>
+                                </div>
+                                <div class="col-xs-1">
+                                  <input class = "fullWidth" id = "R1R3" type="text"/>
+                                </div>
+                                <div class="col-xs-1 col-xs-offset-1">
+                                  <p> R1-R4</p>
+                                </div>
+                                <div class="col-xs-1">
+                                  <input class = "fullWidth" id = "R1R4" type="text"/>
+                                </div>
+                          </div>
+                          <div class="row paddingTop">
+                                <div class="col-xs-1">
+                                  <p> R2-R1</p>
+                                </div>
+                                <div class="col-xs-1">
+                                  <input class = "fullWidth" id = "R2R1" type="text"/>
+                                </div>
+                                <div class="col-xs-1 col-xs-offset-1">
+                                  <p> R2-R3</p>
+                                </div>
+                                <div class="col-xs-1">
+                                  <input class = "fullWidth" id = "R2R3" type="text"/>
+                                </div>
+                                <div class="col-xs-1 col-xs-offset-1">
+                                  <p> R2-R4</p>
+                                </div>
+                                <div class="col-xs-1">
+                                  <input class = "fullWidth" id = "R2R4" type="text"/>
+                                </div>
+                          </div>
+                          <div class="row paddingTop">
+                                <div class="col-xs-1">
+                                  <p> R3-R1</p>
+                                </div>
+                                <div class="col-xs-1">
+                                  <input class = "fullWidth" id = "R3R1" type="text"/>
+                                </div>
+                                <div class="col-xs-1 col-xs-offset-1">
+                                  <p> R3-R2</p>
+                                </div>
+                                <div class="col-xs-1">
+                                  <input class = "fullWidth" id = "R3R2" type="text"/>
+                                </div>
+                                <div class="col-xs-1 col-xs-offset-1">
+                                  <p> R3-R4</p>
+                                </div>
+                                <div class="col-xs-1">
+                                  <input class = "fullWidth" id = "R3R4" type="text"/>
+                                </div>
+                          </div>
+                          <div class="row paddingTop">
+                                <div class="col-xs-1">
+                                  <p> R4-R1</p>
+                                </div>
+                                <div class="col-xs-1">
+                                  <input class = "fullWidth" id = "R4R1" type="text"/>
+                                </div>
+                                <div class="col-xs-1 col-xs-offset-1">
+                                  <p> R4-R2</p>
+                                </div>
+                                <div class="col-xs-1">
+                                  <input class = "fullWidth" id = "R4R2" type="text"/>
+                                </div>
+                                <div class="col-xs-1 col-xs-offset-1">
+                                  <p> R4-R3</p>
+                                </div>
+                                <div class="col-xs-1">
+                                  <input class = "fullWidth" id = "R4R3" type="text"/>
+                                </div>
+                          </div>
+                           <div class="row paddingTop">
+                                <div class="col-xs-4">
+                                  <div class="checkbox">
+                                  <label>
+                                    <input onclick = 'onChangeTopologyCheckbox(this);' type="checkbox"> Use given values
+                                  </label>
+                                </div>
+                          </div>
+                      </section>
+                      <section class="panel-footer">
+                        <p>Enter link costs. Leave blank to disconnect</p>
+                     </section>
+              </section> 
+              </div>
+            </div>
+             <!-- Change Topology -->
+
         </div>
         <!-- /#page-content-wrapper -->
 

@@ -3,7 +3,7 @@ var SETTINGS = {};
 //Time is measured in milli seconds
 
 //Configurable by user
-SETTINGS.FrameSlot = 0.50; //milli seconds
+
 SETTINGS.PacketSize = 1000; // In bytes
 SETTINGS.TransmissionRate = 100 // In Mbps
 SETTINGS.MeanInterPacket = 2; // Number of packets
@@ -22,11 +22,10 @@ SETTINGS.ConvertToMilliSec = Math.pow(10,3);
 SETTINGS.MaxPerNodeResultsToDisplay = 5;
 SETTINGS.RedCollisionsThreshold = 8; // Collisions per packet greater than this value are considered to be "red" - in the danger zone. 
 SETTINGS.NumberOfNodes = 4;
-
+SETTINGS.FrameSlot = 0.50; //milli seconds
 
 SETTINGS.UpdateUI = function(){
 
-	document.getElementById('frameSlot').value = SETTINGS.FrameSlot; //milli seconds
 	document.getElementById('interNode').value = SETTINGS.InterNodeDistance// In bytes
 	document.getElementById('transmissionRate').value = SETTINGS.TransmissionRate; // In Mbps
 	document.getElementById('packetInterArrival').value = SETTINGS.MeanInterPacket // In Frame Slots
@@ -40,7 +39,6 @@ SETTINGS.UpdateUI = function(){
 
 SETTINGS.UpdatefromUI = function(){
 
-	SETTINGS.FrameSlot = parseFloat(document.getElementById('frameSlot').value); //milli seconds
 	SETTINGS.InterNodeDistance = parseFloat(document.getElementById('interNode').value); // In bytes
 	SETTINGS.TransmissionRate = parseFloat(document.getElementById('transmissionRate').value); // In Mbps
 	SETTINGS.MeanInterPacket = parseFloat(document.getElementById('packetInterArrival').value); // In Frame Slots
@@ -53,4 +51,4 @@ SETTINGS.UpdatefromUI = function(){
 
 $(document).ready(function(){
 		SETTINGS.UpdateUI();
-	});
+});

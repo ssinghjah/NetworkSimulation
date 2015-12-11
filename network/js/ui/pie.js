@@ -3,6 +3,7 @@ var createPie = function(values, label, className, id){
 var numPacketsTransmitted = values.length;
 
 var maxX = Math.max.apply(Math,values);
+maxX = maxX == 0 ? 1 : maxX;
 var x = d3.scale.linear()
     .domain([0, maxX])
     .range([0, width]);

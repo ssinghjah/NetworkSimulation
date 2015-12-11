@@ -1,7 +1,10 @@
 function LinkCostUpdater(){
 
 	this.start = function(){
-		update.call(this);
+		if(!ChangeTopology)
+		{
+			update.call(this);
+		}
 	}
 
 	var updateAfterInterval = function()

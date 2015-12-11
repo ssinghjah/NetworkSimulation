@@ -30,3 +30,36 @@ var GetLinkCosts = function  (time) {
 	}
 	return costs;
 }
+
+UpdateTopologyfromUI = function(){
+
+	var newTopology = [];
+	var numRouters = Topology.length;
+	for(var i = 0; i < numRouters; i++)
+	{
+		newTopology[i] = [];
+		for(var j = 0; j < numRouters; j++)
+		{	
+			if(j == i)
+			{
+				newTopology[i][j] = 0;
+			}
+			else
+			{	
+				var id = "R" + (i+1) + "R" + (j+1);
+				var newCost = parseFloat(document.getElementById(id).value);
+				if( isNaN(newCost))
+				{
+					newTopology[i][j] = INFINITY;
+				}
+				else
+				{
+					newTopology[i][j] = newCost;
+				}
+			}
+		}		
+	}
+	Topology = newTopology;
+}
+
+

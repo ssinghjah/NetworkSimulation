@@ -58,6 +58,8 @@
 		updateNeighbourCost(source, forwardingTable, topology);
 		while(routersUsed.length < numRouters){
 			var nextRouter = getRouterWithMinCost(forwardingTable, routersUsed);
+			if( -1 == nextRouter)
+				break;
 			updateNeighbourCost(nextRouter, forwardingTable, topology);
 			routersUsed.push(nextRouter);
 		}
@@ -78,6 +80,12 @@
 				// Move backwards from predecessor until we reach the source node.
 				var predecessor = i;
 				while(forwardingTable.entries[predecessor].predecessor !== source){
+					if( -1 == forwardingTable.entries[predecessor].predecessor)
+					{
+						// no path to the desination
+						predecessor = -1;
+						break;
+					}
 					predecessor = forwardingTable.entries[predecessor].predecessor;
 				}
 				// Store the next hop.

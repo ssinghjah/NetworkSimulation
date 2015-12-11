@@ -51,13 +51,13 @@ createPerDestinationNodeDetails = function( srcId, destId ){
          collisionsPerPacket = collisionsPerPacket.toFixed(2);
       }
 
-
+      var successfulAttempts = numAttempts == 0 ? 0 : packetsDelivered/numAttempts;
       var details = {
       "Desination": destination.name,
       "Throughput":throughput, 
       "Packets Delivered":packetsDelivered,
       "Number of Attempts":numAttempts,
-      "Successful Attempts":((packetsDelivered/numAttempts)*100).toFixed(2) + " %",
+      "Successful Attempts":((successfulAttempts)*100).toFixed(2) + " %",
       "Average End to End Delay" : e2eDelay, 
       "Collisions per packet":collisionsPerPacket
     };
@@ -114,12 +114,11 @@ createRouterSummary = function(){
       var utilization = (router.busyTime/SETTINGS.SimTime)*100;
       utilization = utilization.toFixed(2) + " %";
       
-      var inputQueueDelay = router.inputQueueDelay / router.packetsProcessed;
+      var inputQueueDelay = router.packetsProcessed == 0 ? 0 : router.inputQueueDelay / router.packetsProcessed;
       inputQueueDelay = inputQueueDelay.toFixed(3) + " msec";
       
       var packetsDelivered = router.packetsDelivered;
-      
-      var outputQueueDelay = router.outputQueueDelay / packetsDelivered;
+      var outputQueueDelay = packetsDelivered == 0 ? 0 : router.outputQueueDelay / packetsDelivered;
       outputQueueDelay = outputQueueDelay.toFixed(3) + " msec";
       
       routerSummary.push(

@@ -6,5 +6,5 @@ var RouterBusMap = [0,0,1,1];
 var NodeSubnetMap = [[1],[0],[3],[2]];
 var TotalNumNodes = 4;
 var RouterIdOffset = 10;
-
+var ChangeTopology = false;
 

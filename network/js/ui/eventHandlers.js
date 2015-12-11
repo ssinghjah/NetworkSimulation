@@ -6,9 +6,28 @@ var onEdit = function(){
 		$('#editor').show();
 }
 
+var onChangeTopology = function(){
+		hideResultsAndEditor();
+		$('.links').removeClass('active');
+		$('#changeTopologyLink').addClass('active');
+		$('#changeTopology').show();
+}
+
+var onChangeTopologyCheckbox = function(checkbox){
+	if(checkbox.checked){
+		ChangeTopology = true;
+		UpdateTopologyfromUI();
+	}
+	else{
+		ChangeTopology = false;
+	}
+}
+
+
 var hideResultsAndEditor = function(){
 	$('div.results').hide();
 	$('#editor').hide();
+	$('#changeTopology').hide();
 }
 
 var onSummary = function(){
@@ -16,7 +35,6 @@ var onSummary = function(){
 		$('.summary').show();
 		$('.links').removeClass('active');
 		$('#summaryLink').addClass('active');
-	
 }
 
 
